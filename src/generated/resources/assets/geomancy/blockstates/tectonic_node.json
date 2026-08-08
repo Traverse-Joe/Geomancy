@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "revealed=false": {
+      "model": "geomancy:block/tectonic_node_hidden"
+    },
+    "revealed=true": {
+      "model": "geomancy:block/tectonic_node"
+    }
+  }
+}

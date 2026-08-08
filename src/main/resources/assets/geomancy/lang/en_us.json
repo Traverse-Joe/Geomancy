@@ -1,0 +1,36 @@
+{
+  "itemGroup.geomancy": "Example Mod Tab",
+  "block.geomancy.example_block": "Example Block",
+  "item.geomancy.example_item": "Example Item",
+  "block.geomancy.tectonic_node": "Tectonic Node",
+  "item.geomancy.resonant_amethyst_shard": "Resonant Amethyst Shard",
+  "item.geomancy.geomancer_bell": "Geomancer's Bell",
+  "item.geomancy.geomancer_tuning_hammer": "Geomancer's Tuning Hammer",
+
+  "item.geomancy.geomancer_tuning_hammer.attuned": "Attuned to tectonic node",
+  "item.geomancy.geomancer_tuning_hammer.linked": "Telluric link established",
+  "item.geomancy.geomancer_tuning_hammer.no_node": "Attune to a tectonic node first",
+  "item.geomancy.geomancer_tuning_hammer.node_gone": "The attuned node is no longer there",
+  "item.geomancy.geomancer_tuning_hammer.out_of_range": "Target is beyond the node's reach",
+  "item.geomancy.geomancer_tuning_hammer.obstructed": "No clear line of sight to the target",
+  "item.geomancy.geomancer_tuning_hammer.no_recipe": "This node cannot transmute that block",
+
+  "geomancy.essence.terra": "Terra",
+  "geomancy.essence.metallum": "Metallum",
+  "geomancy.essence.vitri": "Vitri",
+  "geomancy.essence.motus": "Motus",
+  "geomancy.essence.ignis": "Ignis",
+  "geomancy.essence.inanis": "Inanis",
+
+  "geomancy.jade.node_type": "Attunement: %s",
+  "geomancy.jade.transmuting": "Transmuting: %s%%",
+  "config.jade.plugin_geomancy.tectonic_node": "Tectonic Node",
+
+  "geomancy.configuration.title": "Geomancy Configs",
+  "geomancy.configuration.section.geomancy.common.toml": "Geomancy Configs",
+  "geomancy.configuration.section.geomancy.common.toml.title": "Geomancy Configs",
+  "geomancy.configuration.items": "Item List",
+  "geomancy.configuration.logDirtBlock": "Log Dirt Block",
+  "geomancy.configuration.magicNumberIntroduction": "Magic Number Text",
+  "geomancy.configuration.magicNumber": "Magic Number"
+}

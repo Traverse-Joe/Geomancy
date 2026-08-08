@@ -1,0 +1,6 @@
+{
+  "type": "geomancy:transmutation",
+  "duration": 100,
+  "input": "minecraft:stone",
+  "result": "minecraft:iron_ore"
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "M": "minecraft:smooth_stone",
+    "R": "geomancy:resonant_amethyst_shard",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    "M",
+    "R",
+    "S"
+  ],
+  "result": {
+    "id": "geomancy:geomancer_tuning_hammer"
+  }
+}

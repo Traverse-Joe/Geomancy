@@ -1,0 +1,6 @@
+{
+  "parent": "geomancy:block/tectonic_node_core",
+  "textures": {
+    "all": "geomancy:block/tectonic_node"
+  }
+}

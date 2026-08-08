@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_overworld",
+  "features": "geomancy:tectonic_node",
+  "step": "surface_structures"
+}
