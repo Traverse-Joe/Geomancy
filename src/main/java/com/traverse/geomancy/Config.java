@@ -1,39 +1,67 @@
 package com.traverse.geomancy;
 
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static final ModConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
-            .comment("Whether to log the dirt block on common setup")
-            .define("logDirtBlock", true);
+    public static final ModConfigSpec.IntValue NODE_CAPACITY = BUILDER
+            .comment("Maximum raw essence a tectonic node can hold")
+            .defineInRange("nodeCapacity", 2000, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue NODE_REGEN_INTERVAL = BUILDER
+            .comment("Ticks between node essence regeneration pulses")
+            .defineInRange("nodeRegenInterval", 10, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue NODE_REGEN_AMOUNT = BUILDER
+            .comment("Raw essence regenerated per pulse")
+            .defineInRange("nodeRegenAmount", 1, 1, Integer.MAX_VALUE);
 
-    public static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue RELAY_BUFFER_CAPACITY = BUILDER
+            .comment("Maximum essence a resonance pillar or jar can buffer")
+            .defineInRange("relayBufferCapacity", 200, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue RELAY_TRANSFER_INTERVAL = BUILDER
+            .comment("Ticks between relay pull attempts")
+            .defineInRange("relayTransferInterval", 10, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue RELAY_TRANSFER_AMOUNT = BUILDER
+            .comment("Essence pulled per attempt")
+            .defineInRange("relayTransferAmount", 20, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue RELAY_MAX_HOP = BUILDER
+            .comment("Maximum link distance between relays, in blocks")
+            .defineInRange("relayMaxHop", 16, 1, 64);
+    public static final ModConfigSpec.IntValue RELAY_MAX_CHAIN_DEPTH = BUILDER
+            .comment("Maximum number of hops from a wild node to a relay")
+            .defineInRange("relayMaxChainDepth", 8, 1, 64);
+    public static final ModConfigSpec.IntValue RELAY_REVALIDATE_INTERVAL = BUILDER
+            .comment("Ticks between forced link revalidation, catching changes place/break events miss")
+            .defineInRange("relayRevalidateInterval", 100, 1, Integer.MAX_VALUE);
 
-    public static final ModConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
-            .comment("What you want the introduction message to be for the magic number")
-            .define("magicNumberIntroduction", "The magic number is... ");
+    public static final ModConfigSpec.IntValue JAR_RAW_INTAKE = BUILDER
+            .comment("Maximum raw essence a resonance jar can hold before refining")
+            .defineInRange("jarRawIntake", 100, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue JAR_REFINED_CAPACITY = BUILDER
+            .comment("Maximum refined essence a resonance jar can store")
+            .defineInRange("jarRefinedCapacity", 500, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue JAR_REFINE_INTERVAL = BUILDER
+            .comment("Ticks between refining pulses")
+            .defineInRange("jarRefineInterval", 20, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue JAR_REFINE_RATIO = BUILDER
+            .comment("Raw essence consumed per unit of refined essence produced")
+            .defineInRange("jarRefineRatio", 5, 1, Integer.MAX_VALUE);
 
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
-            .comment("A list of items to log on common setup.")
-            .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
+    public static final ModConfigSpec.IntValue ITEM_SCAN_INTERVAL = BUILDER
+            .comment("Ticks between a Motus pillar's logistics scans")
+            .defineInRange("itemScanInterval", 10, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue LOGISTICS_COST = BUILDER
+            .comment("Motus essence consumed per item moved")
+            .defineInRange("logisticsCost", 5, 1, Integer.MAX_VALUE);
+    public static final ModConfigSpec.IntValue LOGISTICS_RANGE = BUILDER
+            .comment("Maximum endpoint distance for Motus logistics")
+            .defineInRange("logisticsRange", 8, 1, 32);
+    public static final ModConfigSpec.DoubleValue LOGISTICS_PICKUP_RADIUS = BUILDER
+            .comment("Radius of a Motus world-item pickup circle")
+            .defineInRange("logisticsPickupRadius", 2.5D, 0.5D, 8.0D);
+    public static final ModConfigSpec.IntValue PEDESTAL_BUFFER_CAPACITY = BUILDER
+            .comment("Maximum essence held by an item pedestal")
+            .defineInRange("pedestalBufferCapacity", 100, 1, Integer.MAX_VALUE);
 
     static final ModConfigSpec SPEC = BUILDER.build();
-
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(Identifier.parse(itemName));
-    }
 }

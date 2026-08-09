@@ -1,0 +1,9 @@
+{
+  "type": "geomancy:lithic_shattering",
+  "input": "minecraft:raw_copper",
+  "resonance_cost": 50,
+  "result": {
+    "count": 2,
+    "id": "geomancy:copper_dust"
+  }
+}

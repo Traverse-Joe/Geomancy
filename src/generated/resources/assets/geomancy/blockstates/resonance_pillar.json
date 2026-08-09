@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "linked=false": {
+      "model": "geomancy:block/resonance_pillar"
+    },
+    "linked=true": {
+      "model": "geomancy:block/resonance_pillar_linked"
+    }
+  }
+}

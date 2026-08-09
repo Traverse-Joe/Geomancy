@@ -1,0 +1,19 @@
+{
+  "type": "geomancy:hearth_synthesis",
+  "ingredients": [
+    {
+      "ingredient": "minecraft:amethyst_shard"
+    },
+    {
+      "ingredient": "minecraft:quartz"
+    },
+    {
+      "ingredient": "minecraft:copper_ingot"
+    }
+  ],
+  "requires_focus": false,
+  "resonance_cost": 500,
+  "result": {
+    "id": "geomancy:resonant_amethyst_focus"
+  }
+}

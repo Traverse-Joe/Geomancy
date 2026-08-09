@@ -10,4 +10,6 @@ public class TectonicNodeRenderState extends BlockEntityRenderState {
     public int outlineColor;
     public @Nullable Vec3 jobOffset;
     public float jobProgress;
+    public float jobTime;
+    public Vec3 cameraOffset = Vec3.ZERO;
 }

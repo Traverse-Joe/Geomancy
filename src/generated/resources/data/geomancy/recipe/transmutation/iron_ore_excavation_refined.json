@@ -1,0 +1,14 @@
+{
+  "type": "geomancy:transmutation",
+  "cost": 20,
+  "duration": 80,
+  "essence": "terra",
+  "form": "refined",
+  "input": {
+    "type": "block",
+    "blocks": "minecraft:iron_ore"
+  },
+  "result": {
+    "type": "loot"
+  }
+}

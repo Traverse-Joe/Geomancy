@@ -1,0 +1,6 @@
+{
+  "parent": "geomancy:block/piezo_anvil_core",
+  "textures": {
+    "all": "geomancy:block/resonance_pillar"
+  }
+}

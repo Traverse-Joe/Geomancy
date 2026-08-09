@@ -3,11 +3,6 @@ package com.traverse.geomancy.recipe;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -19,36 +14,39 @@ import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 
+import com.traverse.geomancy.essence.EssenceForm;
 import com.traverse.geomancy.registry.ModRecipes;
 
-public record TransmutationRecipe(HolderSet<Block> input, EssenceFilter essence, Holder<Block> result, int duration)
-        implements Recipe<TransmutationInput> {
+public record TransmutationRecipe(TransmutationSubject input, EssenceFilter essence, EssenceForm form, int cost,
+                                   TransmutationResult result, int duration) implements Recipe<TransmutationInput> {
 
     public static final MapCodec<TransmutationRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
-            RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("input").forGetter(TransmutationRecipe::input),
+            TransmutationSubject.CODEC.fieldOf("input").forGetter(TransmutationRecipe::input),
             EssenceFilter.CODEC.optionalFieldOf("essence", EssenceFilter.ANY).forGetter(TransmutationRecipe::essence),
-            BuiltInRegistries.BLOCK.holderByNameCodec().fieldOf("result").forGetter(TransmutationRecipe::result),
+            EssenceForm.CODEC.optionalFieldOf("form", EssenceForm.RAW).forGetter(TransmutationRecipe::form),
+            ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("cost", 0).forGetter(TransmutationRecipe::cost),
+            TransmutationResult.CODEC.fieldOf("result").forGetter(TransmutationRecipe::result),
             ExtraCodecs.POSITIVE_INT.fieldOf("duration").forGetter(TransmutationRecipe::duration)
     ).apply(i, TransmutationRecipe::new));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TransmutationRecipe> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.holderSet(Registries.BLOCK), TransmutationRecipe::input,
+            TransmutationSubject.STREAM_CODEC, TransmutationRecipe::input,
             EssenceFilter.STREAM_CODEC, TransmutationRecipe::essence,
-            ByteBufCodecs.holderRegistry(Registries.BLOCK), TransmutationRecipe::result,
+            EssenceForm.STREAM_CODEC, TransmutationRecipe::form,
+            ByteBufCodecs.VAR_INT, TransmutationRecipe::cost,
+            TransmutationResult.STREAM_CODEC, TransmutationRecipe::result,
             ByteBufCodecs.VAR_INT, TransmutationRecipe::duration,
             TransmutationRecipe::new);
 
     @Override
     public boolean matches(TransmutationInput input, Level level) {
-        return this.input.contains(BuiltInRegistries.BLOCK.wrapAsHolder(input.state().getBlock()))
-                && essence.accepts(input.essence());
+        return this.input.matches(input.target()) && essence.accepts(input.essence()) && form == input.form();
     }
 
     @Override
     public ItemStack assemble(TransmutationInput input) {
-        return ItemStack.EMPTY;
+        return result instanceof TransmutationResult.AsItem(var template) ? template.create() : ItemStack.EMPTY;
     }
 
     // Keeps RecipeManager from warning that a recipe with no item ingredients

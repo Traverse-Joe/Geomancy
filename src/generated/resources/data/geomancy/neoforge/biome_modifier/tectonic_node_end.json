@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_end",
+  "features": "geomancy:tectonic_node_end",
+  "step": "surface_structures"
+}

@@ -1,0 +1,23 @@
+{
+  "textures": {
+    "all": "geomancy:block/resonance_pillar",
+    "particle": "geomancy:block/resonance_pillar"
+  },
+  "elements": [
+    { "from": [3, 0, 3], "to": [13, 3, 13], "faces": {
+      "down": { "texture": "#all", "cullface": "down" }, "up": { "texture": "#all" },
+      "north": { "texture": "#all" }, "south": { "texture": "#all" },
+      "west": { "texture": "#all" }, "east": { "texture": "#all" }
+    }},
+    { "from": [6, 3, 6], "to": [10, 12, 10], "faces": {
+      "down": { "texture": "#all" }, "up": { "texture": "#all" },
+      "north": { "texture": "#all" }, "south": { "texture": "#all" },
+      "west": { "texture": "#all" }, "east": { "texture": "#all" }
+    }},
+    { "from": [2, 12, 2], "to": [14, 14, 14], "faces": {
+      "down": { "texture": "#all" }, "up": { "texture": "#all" },
+      "north": { "texture": "#all" }, "south": { "texture": "#all" },
+      "west": { "texture": "#all" }, "east": { "texture": "#all" }
+    }}
+  ]
+}

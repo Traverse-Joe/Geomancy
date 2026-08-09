@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "minecraft:glass",
+    "R": "geomancy:resonant_amethyst_shard"
+  },
+  "pattern": [
+    "GRG",
+    "G G",
+    "GGG"
+  ],
+  "result": {
+    "id": "geomancy:resonance_jar"
+  }
+}

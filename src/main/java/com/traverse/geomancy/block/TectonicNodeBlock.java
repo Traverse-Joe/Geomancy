@@ -23,7 +23,7 @@ import com.traverse.geomancy.registry.ModBlockEntities;
 public class TectonicNodeBlock extends Block implements EntityBlock {
     public static final BooleanProperty REVEALED = BooleanProperty.create("revealed");
 
-    private static final VoxelShape SHAPE = Block.cube(6.0);
+    private static final VoxelShape SHAPE = Block.cube(12.0);
 
     public TectonicNodeBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -47,15 +47,7 @@ public class TectonicNodeBlock extends Block implements EntityBlock {
 
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
-        if (level.isClientSide()) {
-            return null;
-        }
-        return createTickerHelper(type, ModBlockEntities.TECTONIC_NODE.get(), TectonicNodeBlockEntity::serverTick);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <A extends BlockEntity, E extends BlockEntity> @Nullable BlockEntityTicker<A> createTickerHelper(
-            BlockEntityType<A> actual, BlockEntityType<E> expected, BlockEntityTicker<? super E> ticker) {
-        return expected == actual ? (BlockEntityTicker<A>) ticker : null;
+        return Tickers.helper(type, ModBlockEntities.TECTONIC_NODE.get(),
+                level.isClientSide() ? TectonicNodeBlockEntity::clientTick : TectonicNodeBlockEntity::serverTick);
     }
 }

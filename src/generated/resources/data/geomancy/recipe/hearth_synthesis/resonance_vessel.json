@@ -1,0 +1,21 @@
+{
+  "type": "geomancy:hearth_synthesis",
+  "ingredients": [
+    {
+      "ingredient": "minecraft:glass_bottle"
+    },
+    {
+      "ingredient": "minecraft:amethyst_shard"
+    },
+    {
+      "ingredient": "minecraft:copper_ingot"
+    },
+    {
+      "ingredient": "geomancy:quartz_dust"
+    }
+  ],
+  "resonance_cost": 300,
+  "result": {
+    "id": "geomancy:resonance_vessel"
+  }
+}

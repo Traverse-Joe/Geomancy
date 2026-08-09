@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "D": "minecraft:polished_deepslate"
+  },
+  "pattern": [
+    "D D",
+    "DCD",
+    "DDD"
+  ],
+  "result": {
+    "id": "geomancy:resonant_hearth"
+  }
+}

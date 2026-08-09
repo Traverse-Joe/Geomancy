@@ -1,0 +1,27 @@
+{
+  "render_type": "cutout",
+  "parent": "block/block",
+  "textures": {
+    "stone": "minecraft:block/polished_deepslate",
+    "copper": "minecraft:block/cut_copper",
+    "plate": "minecraft:block/amethyst_block",
+    "particle": "#stone"
+  },
+  "elements": [
+    { "from": [1, 0, 1], "to": [15, 4, 15], "faces": {
+      "down": { "texture": "#stone", "cullface": "down" }, "up": { "texture": "#stone" },
+      "north": { "texture": "#stone" }, "south": { "texture": "#stone" },
+      "west": { "texture": "#stone" }, "east": { "texture": "#stone" }
+    }},
+    { "from": [4, 4, 4], "to": [12, 11, 12], "faces": {
+      "down": { "texture": "#copper" }, "up": { "texture": "#copper" },
+      "north": { "texture": "#copper" }, "south": { "texture": "#copper" },
+      "west": { "texture": "#copper" }, "east": { "texture": "#copper" }
+    }},
+    { "from": [1, 11, 1], "to": [15, 15, 15], "faces": {
+      "down": { "texture": "#stone" }, "up": { "texture": "#plate" },
+      "north": { "texture": "#stone" }, "south": { "texture": "#stone" },
+      "west": { "texture": "#stone" }, "east": { "texture": "#stone" }
+    }}
+  ]
+}

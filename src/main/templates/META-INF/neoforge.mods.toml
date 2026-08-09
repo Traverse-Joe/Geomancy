@@ -19,10 +19,10 @@ displayName="${mod_name}" #mandatory
 
 #credits="" #optional
 
-#authors=""
+authors="Joe"
 
 description='''
-Example mod description.
+An earth-based magic mod centered on telluric energy, spatial geometry, and in-world interaction.
 '''
 
 [[mixins]]

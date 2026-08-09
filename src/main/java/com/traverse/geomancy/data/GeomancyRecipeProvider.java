@@ -1,8 +1,9 @@
 package com.traverse.geomancy.data;
 
+import java.util.Optional;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,13 +14,26 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.CookingBookCategory;
+import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
 import com.traverse.geomancy.Geomancy;
+import com.traverse.geomancy.essence.Essence;
+import com.traverse.geomancy.essence.EssenceForm;
 import com.traverse.geomancy.recipe.EssenceFilter;
+import com.traverse.geomancy.recipe.HearthIngredient;
+import com.traverse.geomancy.recipe.HearthSynthesisRecipe;
+import com.traverse.geomancy.recipe.LithicShatteringRecipe;
 import com.traverse.geomancy.recipe.TransmutationRecipe;
+import com.traverse.geomancy.recipe.TransmutationResult;
+import com.traverse.geomancy.recipe.TransmutationSubject;
+import com.traverse.geomancy.registry.ModBlocks;
 import com.traverse.geomancy.registry.ModItems;
 
 public class GeomancyRecipeProvider extends RecipeProvider {
@@ -56,23 +70,203 @@ public class GeomancyRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
                 .save(output);
 
-        transmutation(Blocks.STONE, Blocks.IRON_ORE, 100)
+        shaped(RecipeCategory.TOOLS, ModItems.GEOMANCER_ROUTING_ROD.get())
+                .define('C', Items.COPPER_INGOT)
+                .define('R', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .define('S', Items.STICK)
+                .pattern("R C")
+                .pattern(" S ")
+                .pattern(" S ")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModBlocks.RESONANCE_PILLAR_ITEM.get(), 2)
+                .define('C', Blocks.CHISELED_STONE_BRICKS)
+                .define('R', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .pattern("C")
+                .pattern("R")
+                .pattern("C")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModItems.RESONANCE_JAR.get())
+                .define('G', Items.GLASS)
+                .define('R', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .pattern("GRG")
+                .pattern("G G")
+                .pattern("GGG")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModBlocks.ITEM_PEDESTAL_ITEM.get())
+                .define('S', Blocks.SMOOTH_STONE_SLAB)
+                .define('R', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .define('C', Blocks.CHISELED_STONE_BRICKS)
+                .pattern(" S ")
+                .pattern(" R ")
+                .pattern(" C ")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModBlocks.PIEZO_ANVIL_ITEM.get())
+                .define('D', Blocks.DEEPSLATE_BRICKS)
+                .define('C', Items.COPPER_INGOT)
+                .define('A', Items.AMETHYST_SHARD)
+                .pattern("DDD")
+                .pattern("CAC")
+                .pattern("DDD")
+                .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModItems.GEODE_JAR.get())
+                .define('G', Items.GLASS)
+                .define('A', Items.AMETHYST_SHARD)
+                .define('C', Items.COPPER_INGOT)
+                .pattern("GAG")
+                .pattern("G G")
+                .pattern("GCG")
+                .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModBlocks.RESONANT_HEARTH_ITEM.get())
+                .define('D', Blocks.POLISHED_DEEPSLATE)
+                .define('C', Items.COPPER_INGOT)
+                .pattern("D D")
+                .pattern("DCD")
+                .pattern("DDD")
+                .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModBlocks.RESONANT_BRAZIER_ITEM.get())
+                .define('D', Blocks.POLISHED_DEEPSLATE)
+                .define('C', Items.COPPER_INGOT)
+                .define('I', Items.IRON_BARS)
+                .pattern("I I")
+                .pattern("CDC")
+                .pattern("DDD")
+                .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
+                .save(output);
+
+        output.accept(ResourceKey.create(Registries.RECIPE,
+                        Identifier.fromNamespaceAndPath(Geomancy.MODID, "hearth_synthesis/resonant_amethyst_focus")),
+                new HearthSynthesisRecipe(List.of(
+                        new HearthIngredient(Ingredient.of(Items.AMETHYST_SHARD), 1),
+                        new HearthIngredient(Ingredient.of(Items.QUARTZ), 1),
+                        new HearthIngredient(Ingredient.of(Items.COPPER_INGOT), 1)),
+                        false, 500, 20, new ItemStackTemplate(ModItems.RESONANT_AMETHYST_FOCUS.get())), null);
+
+        hearth("quartz_dust", List.of(new HearthIngredient(Ingredient.of(Items.QUARTZ), 1)),
+                40, new ItemStackTemplate(ModItems.QUARTZ_DUST.get(), 2));
+        hearth("amethyst_dust", List.of(new HearthIngredient(Ingredient.of(Items.AMETHYST_SHARD), 1)),
+                50, new ItemStackTemplate(ModItems.AMETHYST_DUST.get(), 2));
+        hearth("substrate_slate", List.of(
+                        new HearthIngredient(Ingredient.of(Blocks.SMOOTH_STONE), 1),
+                        new HearthIngredient(Ingredient.of(ModItems.AMETHYST_DUST.get()), 1)),
+                150, new ItemStackTemplate(ModItems.SUBSTRATE_SLATE.get()));
+        hearth("resonance_vessel", List.of(
+                        new HearthIngredient(Ingredient.of(Items.GLASS_BOTTLE), 1),
+                        new HearthIngredient(Ingredient.of(Items.AMETHYST_SHARD), 1),
+                        new HearthIngredient(Ingredient.of(Items.COPPER_INGOT), 1),
+                        new HearthIngredient(Ingredient.of(ModItems.QUARTZ_DUST.get()), 1)),
+                300, new ItemStackTemplate(ModItems.RESONANCE_VESSEL.get()));
+        hearth("lithic_pickaxe", List.of(
+                        new HearthIngredient(Ingredient.of(Items.IRON_PICKAXE), 1),
+                        new HearthIngredient(Ingredient.of(Items.COPPER_INGOT), 1),
+                        new HearthIngredient(Ingredient.of(Items.COPPER_INGOT), 1),
+                        new HearthIngredient(Ingredient.of(Items.AMETHYST_SHARD), 1),
+                        new HearthIngredient(Ingredient.of(Items.AMETHYST_SHARD), 1),
+                        new HearthIngredient(Ingredient.of(ModItems.SUBSTRATE_SLATE.get()), 1)),
+                750, new ItemStackTemplate(ModItems.LITHIC_PICKAXE.get()));
+
+        shattering("raw_iron", Items.RAW_IRON, ModItems.IRON_DUST.get());
+        shattering("raw_copper", Items.RAW_COPPER, ModItems.COPPER_DUST.get());
+        shattering("raw_gold", Items.RAW_GOLD, ModItems.GOLD_DUST.get());
+
+        smeltingDust(ModItems.IRON_DUST.get(), Items.IRON_INGOT, "iron_dust");
+        smeltingDust(ModItems.COPPER_DUST.get(), Items.COPPER_INGOT, "copper_dust");
+        smeltingDust(ModItems.GOLD_DUST.get(), Items.GOLD_INGOT, "gold_dust");
+
+        transmutation(Blocks.STONE, Blocks.IRON_ORE, new EssenceFilter(Optional.of(Essence.METALLUM)),
+                EssenceForm.RAW, 40, 100)
                 .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/stone_to_iron_ore"));
+        transmutation(Blocks.STONE, Blocks.IRON_ORE, new EssenceFilter(Optional.of(Essence.METALLUM)),
+                EssenceForm.REFINED, 40, 100)
+                .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/stone_to_iron_ore_refined"));
+
+        transmutationLoot(Blocks.IRON_ORE, Essence.TERRA, EssenceForm.RAW, 20, 80)
+                .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/iron_ore_excavation"));
+        transmutationLoot(Blocks.IRON_ORE, Essence.TERRA, EssenceForm.REFINED, 20, 80)
+                .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/iron_ore_excavation_refined"));
+
+        transmutationItem(Items.RAW_IRON, Items.IRON_INGOT, Essence.IGNIS, EssenceForm.RAW, 15, 60)
+                .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/raw_iron_to_iron_ingot"));
+        transmutationItem(Items.RAW_IRON, Items.IRON_INGOT, Essence.IGNIS, EssenceForm.REFINED, 15, 60)
+                .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/raw_iron_to_iron_ingot_refined"));
+
+        transmutation(Blocks.DEEPSLATE, Blocks.DEEPSLATE_GOLD_ORE, new EssenceFilter(Optional.of(Essence.METALLUM)),
+                EssenceForm.REFINED, 20, 200)
+                .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/deepslate_to_deepslate_gold_ore"));
     }
 
-    private TransmutationRecipeBuilder transmutation(Block input, Block result, int duration) {
+    private TransmutationRecipeBuilder transmutation(Block input, Block result, int cost, int duration) {
+        return transmutation(input, result, EssenceFilter.ANY, EssenceForm.RAW, cost, duration);
+    }
+
+    private void hearth(String name, List<HearthIngredient> ingredients, int cost, ItemStackTemplate result) {
+        output.accept(ResourceKey.create(Registries.RECIPE,
+                        Identifier.fromNamespaceAndPath(Geomancy.MODID, "hearth_synthesis/" + name)),
+                new HearthSynthesisRecipe(ingredients, true, cost, 20, result), null);
+    }
+
+    private void shattering(String name, ItemLike input, ItemLike result) {
+        output.accept(ResourceKey.create(Registries.RECIPE,
+                        Identifier.fromNamespaceAndPath(Geomancy.MODID, "lithic_shattering/" + name)),
+                new LithicShatteringRecipe(Ingredient.of(input), new ItemStackTemplate(result.asItem(), 2), 50), null);
+    }
+
+    private void smeltingDust(ItemLike input, ItemLike result, String name) {
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, CookingBookCategory.MISC,
+                        result, 0.7F, 200)
+                .unlockedBy("has_" + name, has(input))
+                .save(output, ResourceKey.create(Registries.RECIPE,
+                        Identifier.fromNamespaceAndPath(Geomancy.MODID, name + "_smelting")));
+    }
+
+    private TransmutationRecipeBuilder transmutation(Block input, Block result, EssenceFilter essence,
+            EssenceForm form, int cost, int duration) {
         return new TransmutationRecipeBuilder(
-                HolderSet.direct(BuiltInRegistries.BLOCK.wrapAsHolder(input)),
-                EssenceFilter.ANY,
-                BuiltInRegistries.BLOCK.wrapAsHolder(result),
+                new TransmutationSubject.OfBlock(HolderSet.direct(BuiltInRegistries.BLOCK.wrapAsHolder(input))),
+                essence, form, cost,
+                new TransmutationResult.AsBlock(BuiltInRegistries.BLOCK.wrapAsHolder(result)),
                 duration);
     }
 
-    private record TransmutationRecipeBuilder(HolderSet<Block> input, EssenceFilter essence,
-                                              Holder<Block> result, int duration) {
+    private TransmutationRecipeBuilder transmutationItem(ItemLike input, ItemLike result, int cost, int duration) {
+        return transmutationItem(input, result, null, EssenceForm.RAW, cost, duration);
+    }
+
+    private TransmutationRecipeBuilder transmutationItem(ItemLike input, ItemLike result, Essence essence,
+            EssenceForm form, int cost, int duration) {
+        return new TransmutationRecipeBuilder(
+                new TransmutationSubject.OfItem(Ingredient.of(input)),
+                essence == null ? EssenceFilter.ANY : new EssenceFilter(Optional.of(essence)), form, cost,
+                new TransmutationResult.AsItem(new ItemStackTemplate(result.asItem())),
+                duration);
+    }
+
+    private TransmutationRecipeBuilder transmutationLoot(Block input, Essence essence, EssenceForm form,
+            int cost, int duration) {
+        return new TransmutationRecipeBuilder(
+                new TransmutationSubject.OfBlock(HolderSet.direct(BuiltInRegistries.BLOCK.wrapAsHolder(input))),
+                new EssenceFilter(Optional.of(essence)), form, cost,
+                new TransmutationResult.AsLoot(), duration);
+    }
+
+    private record TransmutationRecipeBuilder(TransmutationSubject input, EssenceFilter essence, EssenceForm form,
+                                              int cost, TransmutationResult result, int duration) {
         void save(RecipeOutput output, Identifier id) {
             output.accept(ResourceKey.create(Registries.RECIPE, id),
-                    new TransmutationRecipe(input, essence, result, duration), null);
+                    new TransmutationRecipe(input, essence, form, cost, result, duration), null);
         }
     }
 

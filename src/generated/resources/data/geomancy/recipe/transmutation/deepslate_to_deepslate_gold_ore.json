@@ -1,0 +1,15 @@
+{
+  "type": "geomancy:transmutation",
+  "cost": 20,
+  "duration": 200,
+  "essence": "metallum",
+  "form": "refined",
+  "input": {
+    "type": "block",
+    "blocks": "minecraft:deepslate"
+  },
+  "result": {
+    "type": "block",
+    "block": "minecraft:deepslate_gold_ore"
+  }
+}

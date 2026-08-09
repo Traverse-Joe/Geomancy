@@ -4,33 +4,18 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
-import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
-import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import com.traverse.geomancy.registry.ModAttachments;
 import com.traverse.geomancy.registry.ModBlockEntities;
 import com.traverse.geomancy.registry.ModBlocks;
 import com.traverse.geomancy.registry.ModDataComponents;
@@ -46,23 +31,36 @@ public class Geomancy {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", p -> p.mapColor(MapColor.STONE));
-    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
-
-    public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", p -> p.food(new FoodProperties.Builder()
-            .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
-
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.geomancy")) 
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> GEOMANCY_TAB = CREATIVE_MODE_TABS.register("geomancy_tab", () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.geomancy"))
             .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
+            .icon(() -> ModItems.RESONANT_AMETHYST_SHARD.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
-                output.accept(EXAMPLE_ITEM.get());
+                output.accept(ModItems.RESONANT_AMETHYST_SHARD.get());
+                output.accept(ModItems.RESONANT_AMETHYST_FOCUS.get());
+                output.accept(ModItems.GEOMANCER_BELL.get());
+                output.accept(ModItems.GEOMANCER_TUNING_HAMMER.get());
+                output.accept(ModBlocks.RESONANCE_PILLAR_ITEM);
+                output.accept(ModBlocks.ITEM_PEDESTAL_ITEM);
+                output.accept(ModItems.RESONANCE_JAR.get());
+                output.accept(ModBlocks.TECTONIC_NODE_ITEM);
+                output.accept(ModItems.ESSENCE_DEBUG_STICK.get());
+                output.accept(ModItems.GEOMANCER_ROUTING_ROD.get());
+                output.accept(ModBlocks.PIEZO_ANVIL_ITEM);
+                output.accept(ModItems.GEODE_JAR.get());
+                output.accept(ModBlocks.RESONANT_HEARTH_ITEM);
+                output.accept(ModBlocks.RESONANT_BRAZIER_ITEM);
+                output.accept(ModItems.QUARTZ_DUST.get());
+                output.accept(ModItems.AMETHYST_DUST.get());
+                output.accept(ModItems.IRON_DUST.get());
+                output.accept(ModItems.COPPER_DUST.get());
+                output.accept(ModItems.GOLD_DUST.get());
+                output.accept(ModItems.SUBSTRATE_SLATE.get());
+                output.accept(ModItems.RESONANCE_VESSEL.get());
+                output.accept(ModItems.LITHIC_PICKAXE.get());
             }).build());
 
     public Geomancy(IEventBus modEventBus, ModContainer modContainer) {
-        modEventBus.addListener(this::commonSetup);
-
         // Forces ModBlocks/ModBlockEntities static init before the register calls below.
         ModBlocks.bootstrap();
         ModBlockEntities.bootstrap();
@@ -70,6 +68,7 @@ public class Geomancy {
         ModItems.bootstrap();
         ModRecipes.bootstrap();
         ModFeatures.bootstrap();
+        ModAttachments.bootstrap();
 
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
@@ -80,40 +79,8 @@ public class Geomancy {
         ModRecipes.RECIPE_TYPES.register(modEventBus);
         ModRecipes.RECIPE_SERIALIZERS.register(modEventBus);
         ModRecipes.RECIPE_BOOK_CATEGORIES.register(modEventBus);
-
-        NeoForge.EVENT_BUS.register(this);
-
-        modEventBus.addListener(this::addCreative);
+        ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-    }
-
-    private void commonSetup(FMLCommonSetupEvent event) {
-        LOGGER.info("HELLO FROM COMMON SETUP");
-
-        if (Config.LOG_DIRT_BLOCK.getAsBoolean()) {
-            LOGGER.info("DIRT BLOCK >> {}", BuiltInRegistries.BLOCK.getKey(Blocks.DIRT));
-        }
-
-        LOGGER.info("{}{}", Config.MAGIC_NUMBER_INTRODUCTION.get(), Config.MAGIC_NUMBER.getAsInt());
-
-        Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
-    }
-
-    private void addCreative(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(EXAMPLE_BLOCK_ITEM);
-            event.accept(ModBlocks.TECTONIC_NODE_ITEM);
-        }
-        if (event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES) {
-            event.accept(ModItems.RESONANT_AMETHYST_SHARD);
-            event.accept(ModItems.GEOMANCER_BELL);
-            event.accept(ModItems.GEOMANCER_TUNING_HAMMER);
-        }
-    }
-
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-        LOGGER.info("HELLO from server starting");
     }
 }

@@ -1,0 +1,9 @@
+{
+  "type": "geomancy:lithic_shattering",
+  "input": "minecraft:raw_iron",
+  "resonance_cost": 50,
+  "result": {
+    "count": 2,
+    "id": "geomancy:iron_dust"
+  }
+}

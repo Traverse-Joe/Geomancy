@@ -1,0 +1,27 @@
+{
+  "type": "geomancy:hearth_synthesis",
+  "ingredients": [
+    {
+      "ingredient": "minecraft:iron_pickaxe"
+    },
+    {
+      "ingredient": "minecraft:copper_ingot"
+    },
+    {
+      "ingredient": "minecraft:copper_ingot"
+    },
+    {
+      "ingredient": "minecraft:amethyst_shard"
+    },
+    {
+      "ingredient": "minecraft:amethyst_shard"
+    },
+    {
+      "ingredient": "geomancy:substrate_slate"
+    }
+  ],
+  "resonance_cost": 750,
+  "result": {
+    "id": "geomancy:lithic_pickaxe"
+  }
+}

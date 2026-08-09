@@ -29,16 +29,13 @@ public record EssenceFilter(Optional<Essence> required) {
         if (key.equals(ANY_KEY)) {
             return com.mojang.serialization.DataResult.success(ANY);
         }
-        for (Essence essence : Essence.values()) {
-            if (essence.name().toLowerCase(Locale.ROOT).equals(key)) {
-                return com.mojang.serialization.DataResult.success(new EssenceFilter(Optional.of(essence)));
-            }
-        }
-        return com.mojang.serialization.DataResult.error(() -> "Unknown essence '" + raw + "'");
+        return Essence.byName(key)
+                .map(essence -> com.mojang.serialization.DataResult.success(new EssenceFilter(Optional.of(essence))))
+                .orElseGet(() -> com.mojang.serialization.DataResult.error(() -> "Unknown essence '" + raw + "'"));
     }
 
     private String serialize() {
-        return required.map(e -> e.name().toLowerCase(Locale.ROOT)).orElse(ANY_KEY);
+        return required.map(Essence::getSerializedName).orElse(ANY_KEY);
     }
 
     public boolean accepts(Essence essence) {

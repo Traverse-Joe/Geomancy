@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "geomancy:block/geode_jar"
+  }
+}

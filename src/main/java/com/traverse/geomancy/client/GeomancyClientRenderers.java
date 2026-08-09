@@ -16,5 +16,11 @@ public final class GeomancyClientRenderers {
     @SubscribeEvent
     static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(ModBlockEntities.TECTONIC_NODE.get(), TectonicNodeRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_PILLAR.get(), EssenceLinkRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_JAR.get(), EssenceLinkRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.ITEM_PEDESTAL.get(), ItemPedestalRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.RESONANT_HEARTH.get(), ResonantHearthRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.RESONANT_BRAZIER.get(), ResonantBrazierRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.GEODE_JAR.get(), GeodeJarRenderer::new);
     }
 }

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "geomancy:block/resonant_brazier"
+    },
+    "lit=true": {
+      "model": "geomancy:block/resonant_brazier_lit"
+    }
+  }
+}

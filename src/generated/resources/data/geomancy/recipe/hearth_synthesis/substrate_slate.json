@@ -1,0 +1,15 @@
+{
+  "type": "geomancy:hearth_synthesis",
+  "ingredients": [
+    {
+      "ingredient": "minecraft:smooth_stone"
+    },
+    {
+      "ingredient": "geomancy:amethyst_dust"
+    }
+  ],
+  "resonance_cost": 150,
+  "result": {
+    "id": "geomancy:substrate_slate"
+  }
+}

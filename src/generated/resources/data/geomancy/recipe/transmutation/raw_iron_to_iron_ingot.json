@@ -1,0 +1,16 @@
+{
+  "type": "geomancy:transmutation",
+  "cost": 15,
+  "duration": 60,
+  "essence": "ignis",
+  "input": {
+    "type": "item",
+    "ingredient": "minecraft:raw_iron"
+  },
+  "result": {
+    "type": "item",
+    "item": {
+      "id": "minecraft:iron_ingot"
+    }
+  }
+}

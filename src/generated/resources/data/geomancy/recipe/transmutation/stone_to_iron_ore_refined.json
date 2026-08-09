@@ -1,0 +1,15 @@
+{
+  "type": "geomancy:transmutation",
+  "cost": 40,
+  "duration": 100,
+  "essence": "metallum",
+  "form": "refined",
+  "input": {
+    "type": "block",
+    "blocks": "minecraft:stone"
+  },
+  "result": {
+    "type": "block",
+    "block": "minecraft:iron_ore"
+  }
+}

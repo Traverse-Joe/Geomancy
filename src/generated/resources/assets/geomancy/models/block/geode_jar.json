@@ -1,0 +1,6 @@
+{
+  "parent": "geomancy:block/geode_jar_core",
+  "textures": {
+    "all": "geomancy:block/geode_jar"
+  }
+}
