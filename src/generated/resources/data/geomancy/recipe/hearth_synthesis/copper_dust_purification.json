@@ -1,0 +1,16 @@
+{
+  "type": "geomancy:hearth_synthesis",
+  "ingredients": [
+    {
+      "ingredient": "minecraft:raw_copper"
+    },
+    {
+      "ingredient": "geomancy:quartz_dust"
+    }
+  ],
+  "resonance_cost": 150,
+  "result": {
+    "count": 2,
+    "id": "geomancy:copper_dust"
+  }
+}

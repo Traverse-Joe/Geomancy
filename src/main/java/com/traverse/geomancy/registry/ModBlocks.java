@@ -10,6 +10,7 @@ import com.traverse.geomancy.Geomancy;
 import com.traverse.geomancy.block.ResonanceJarBlock;
 import com.traverse.geomancy.block.ResonancePillarBlock;
 import com.traverse.geomancy.block.GeodeJarBlock;
+import com.traverse.geomancy.block.HearthCrystalBlock;
 import com.traverse.geomancy.block.ItemPedestalBlock;
 import com.traverse.geomancy.block.PiezoAnvilBlock;
 import com.traverse.geomancy.block.ResonantHearthBlock;
@@ -94,6 +95,17 @@ public final class ModBlocks {
 
     public static final DeferredItem<BlockItem> RESONANT_BRAZIER_ITEM =
             Geomancy.ITEMS.registerSimpleBlockItem(RESONANT_BRAZIER);
+
+    public static final DeferredBlock<HearthCrystalBlock> HEARTH_CRYSTAL = Geomancy.BLOCKS.registerBlock(
+            "hearth_crystal", HearthCrystalBlock::new, p -> p
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.0F, 6.0F)
+                    .lightLevel(state -> 6)
+                    .noOcclusion());
+
+    public static final DeferredItem<BlockItem> HEARTH_CRYSTAL_ITEM =
+            Geomancy.ITEMS.registerSimpleBlockItem(HEARTH_CRYSTAL);
 
     // Forces static init before Geomancy.BLOCKS.register(bus) runs.
     public static void bootstrap() {

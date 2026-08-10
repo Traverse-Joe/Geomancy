@@ -1,0 +1,18 @@
+{
+  "type": "geomancy:hearth_synthesis",
+  "ingredients": [
+    {
+      "ingredient": "minecraft:glass_pane"
+    },
+    {
+      "ingredient": "geomancy:quartz_dust"
+    },
+    {
+      "ingredient": "geomancy:amethyst_dust"
+    }
+  ],
+  "resonance_cost": 250,
+  "result": {
+    "id": "geomancy:attuned_lens_blank"
+  }
+}

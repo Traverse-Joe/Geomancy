@@ -38,6 +38,7 @@ public class Geomancy {
             .displayItems((parameters, output) -> {
                 output.accept(ModItems.RESONANT_AMETHYST_SHARD.get());
                 output.accept(ModItems.RESONANT_AMETHYST_FOCUS.get());
+                output.accept(ModItems.IRON_TUNING_FORK.get());
                 output.accept(ModItems.GEOMANCER_BELL.get());
                 output.accept(ModItems.GEOMANCER_TUNING_HAMMER.get());
                 output.accept(ModBlocks.RESONANCE_PILLAR_ITEM);
@@ -56,8 +57,12 @@ public class Geomancy {
                 output.accept(ModItems.COPPER_DUST.get());
                 output.accept(ModItems.GOLD_DUST.get());
                 output.accept(ModItems.SUBSTRATE_SLATE.get());
+                output.accept(ModItems.ATTUNED_LENS_BLANK.get());
+                output.accept(ModItems.RESONANT_CRYSTAL_SEED.get());
                 output.accept(ModItems.RESONANCE_VESSEL.get());
                 output.accept(ModItems.LITHIC_PICKAXE.get());
+                output.accept(ModBlocks.HEARTH_CRYSTAL_ITEM);
+                output.accept(ModItems.RESONANT_WAYFINDER.get());
             }).build());
 
     public Geomancy(IEventBus modEventBus, ModContainer modContainer) {

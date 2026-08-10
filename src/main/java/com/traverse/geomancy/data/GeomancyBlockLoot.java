@@ -31,7 +31,7 @@ public class GeomancyBlockLoot extends BlockLootSubProvider {
     protected Iterable<Block> getKnownBlocks() {
         return List.of(ModBlocks.RESONANCE_PILLAR.get(), ModBlocks.RESONANCE_JAR.get(), ModBlocks.ITEM_PEDESTAL.get(),
                 ModBlocks.GEODE_JAR.get(), ModBlocks.PIEZO_ANVIL.get(), ModBlocks.RESONANT_HEARTH.get(),
-                ModBlocks.RESONANT_BRAZIER.get());
+                ModBlocks.RESONANT_BRAZIER.get(), ModBlocks.HEARTH_CRYSTAL.get());
     }
 
     @Override
@@ -41,6 +41,7 @@ public class GeomancyBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.PIEZO_ANVIL.get());
         dropSelf(ModBlocks.RESONANT_HEARTH.get());
         dropSelf(ModBlocks.RESONANT_BRAZIER.get());
+        dropSelf(ModBlocks.HEARTH_CRYSTAL.get());
 
         Block jar = ModBlocks.RESONANCE_JAR.get();
         add(jar, LootTable.lootTable().withPool(applyExplosionCondition(jar,

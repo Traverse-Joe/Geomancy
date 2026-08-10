@@ -1,0 +1,12 @@
+{
+  "type": "geomancy:hearth_synthesis",
+  "ingredients": [
+    {
+      "ingredient": "minecraft:gravel"
+    }
+  ],
+  "resonance_cost": 20,
+  "result": {
+    "id": "minecraft:sand"
+  }
+}

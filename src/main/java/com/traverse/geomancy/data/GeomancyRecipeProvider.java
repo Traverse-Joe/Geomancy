@@ -43,6 +43,16 @@ public class GeomancyRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes() {
+        // Unlocked by iron, not amethyst: this is the tool that finds the first amethyst.
+        shaped(RecipeCategory.TOOLS, ModItems.IRON_TUNING_FORK.get())
+                .define('I', Items.IRON_INGOT)
+                .define('S', Items.STICK)
+                .pattern("I I")
+                .pattern(" I ")
+                .pattern(" S ")
+                .unlockedBy("has_iron_ingot", has(Items.IRON_INGOT))
+                .save(output);
+
         shapeless(RecipeCategory.MISC, ModItems.RESONANT_AMETHYST_SHARD.get())
                 .requires(Items.AMETHYST_SHARD)
                 .requires(Blocks.CALCITE)
@@ -147,6 +157,26 @@ public class GeomancyRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                 .save(output);
 
+        shaped(RecipeCategory.MISC, ModBlocks.HEARTH_CRYSTAL_ITEM.get())
+                .define('D', Blocks.POLISHED_DEEPSLATE)
+                .define('A', Items.AMETHYST_SHARD)
+                .define('C', Items.COPPER_INGOT)
+                .pattern("DAD")
+                .pattern("ACA")
+                .pattern("DAD")
+                .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
+                .save(output);
+
+        shaped(RecipeCategory.TOOLS, ModItems.RESONANT_WAYFINDER.get())
+                .define('C', Items.COPPER_INGOT)
+                .define('A', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .define('S', Items.STICK)
+                .pattern(" A ")
+                .pattern("CAC")
+                .pattern(" S ")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
         output.accept(ResourceKey.create(Registries.RECIPE,
                         Identifier.fromNamespaceAndPath(Geomancy.MODID, "hearth_synthesis/resonant_amethyst_focus")),
                 new HearthSynthesisRecipe(List.of(
@@ -177,6 +207,47 @@ public class GeomancyRecipeProvider extends RecipeProvider {
                         new HearthIngredient(Ingredient.of(Items.AMETHYST_SHARD), 1),
                         new HearthIngredient(Ingredient.of(ModItems.SUBSTRATE_SLATE.get()), 1)),
                 750, new ItemStackTemplate(ModItems.LITHIC_PICKAXE.get()));
+
+        hearth("gravel", List.of(new HearthIngredient(Ingredient.of(Blocks.COBBLESTONE), 1)),
+                20, new ItemStackTemplate(Blocks.GRAVEL.asItem()));
+        hearth("sand", List.of(new HearthIngredient(Ingredient.of(Blocks.GRAVEL), 1)),
+                20, new ItemStackTemplate(Blocks.SAND.asItem()));
+
+        hearth("calcite", List.of(
+                        new HearthIngredient(Ingredient.of(Blocks.SAND), 4),
+                        new HearthIngredient(Ingredient.of(ModItems.QUARTZ_DUST.get()), 1)),
+                100, new ItemStackTemplate(Blocks.CALCITE.asItem()));
+        hearth("tuff", List.of(
+                        new HearthIngredient(Ingredient.of(Items.FLINT), 4),
+                        new HearthIngredient(Ingredient.of(ModItems.AMETHYST_DUST.get()), 1)),
+                150, new ItemStackTemplate(Blocks.TUFF.asItem()));
+        hearth("clay_block", List.of(
+                        new HearthIngredient(Ingredient.of(Items.CLAY_BALL), 4),
+                        new HearthIngredient(Ingredient.of(ModItems.QUARTZ_DUST.get()), 1)),
+                100, new ItemStackTemplate(Blocks.CLAY.asItem()));
+
+        hearth("iron_dust_purification", List.of(
+                        new HearthIngredient(Ingredient.of(Items.RAW_IRON), 1),
+                        new HearthIngredient(Ingredient.of(ModItems.QUARTZ_DUST.get()), 1)),
+                200, new ItemStackTemplate(ModItems.IRON_DUST.get(), 2));
+        hearth("copper_dust_purification", List.of(
+                        new HearthIngredient(Ingredient.of(Items.RAW_COPPER), 1),
+                        new HearthIngredient(Ingredient.of(ModItems.QUARTZ_DUST.get()), 1)),
+                150, new ItemStackTemplate(ModItems.COPPER_DUST.get(), 2));
+        hearth("gold_dust_purification", List.of(
+                        new HearthIngredient(Ingredient.of(Items.RAW_GOLD), 1),
+                        new HearthIngredient(Ingredient.of(ModItems.AMETHYST_DUST.get()), 1)),
+                300, new ItemStackTemplate(ModItems.GOLD_DUST.get(), 2));
+
+        hearth("attuned_lens_blank", List.of(
+                        new HearthIngredient(Ingredient.of(Blocks.GLASS_PANE), 1),
+                        new HearthIngredient(Ingredient.of(ModItems.QUARTZ_DUST.get()), 1),
+                        new HearthIngredient(Ingredient.of(ModItems.AMETHYST_DUST.get()), 1)),
+                250, new ItemStackTemplate(ModItems.ATTUNED_LENS_BLANK.get()));
+        hearth("resonant_crystal_seed", List.of(
+                        new HearthIngredient(Ingredient.of(Blocks.AMETHYST_BLOCK), 1),
+                        new HearthIngredient(Ingredient.of(ModItems.QUARTZ_DUST.get()), 1)),
+                400, new ItemStackTemplate(ModItems.RESONANT_CRYSTAL_SEED.get()));
 
         shattering("raw_iron", Items.RAW_IRON, ModItems.IRON_DUST.get());
         shattering("raw_copper", Items.RAW_COPPER, ModItems.COPPER_DUST.get());

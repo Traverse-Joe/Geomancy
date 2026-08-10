@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "geomancy:resonant_amethyst_shard",
+    "C": "minecraft:copper_ingot",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    " A ",
+    "CAC",
+    " S "
+  ],
+  "result": {
+    "id": "geomancy:resonant_wayfinder"
+  }
+}

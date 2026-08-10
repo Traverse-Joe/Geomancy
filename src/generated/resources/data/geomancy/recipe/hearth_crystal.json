@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "C": "minecraft:copper_ingot",
+    "D": "minecraft:polished_deepslate"
+  },
+  "pattern": [
+    "DAD",
+    "ACA",
+    "DAD"
+  ],
+  "result": {
+    "id": "geomancy:hearth_crystal"
+  }
+}

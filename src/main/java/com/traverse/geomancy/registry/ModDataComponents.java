@@ -11,6 +11,7 @@ import net.minecraft.util.ExtraCodecs;
 
 import com.traverse.geomancy.Geomancy;
 import com.traverse.geomancy.essence.EssenceCharge;
+import com.traverse.geomancy.wayfinder.WayfinderAnchor;
 
 public final class ModDataComponents {
     private ModDataComponents() {
@@ -42,6 +43,13 @@ public final class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("stored_resonance", builder -> builder
                     .persistent(ExtraCodecs.NON_NEGATIVE_INT)
                     .networkSynchronized(ByteBufCodecs.VAR_INT));
+
+    // The Hearth Crystal a Resonant Wayfinder is bound to. The crystal itself stores
+    // nothing; presence at this position is re-checked live at recall time.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<WayfinderAnchor>> WAYFINDER_ANCHOR =
+            DATA_COMPONENTS.registerComponentType("wayfinder_anchor", b -> b
+                    .persistent(WayfinderAnchor.CODEC)
+                    .networkSynchronized(WayfinderAnchor.STREAM_CODEC));
 
     public static void bootstrap() {
     }

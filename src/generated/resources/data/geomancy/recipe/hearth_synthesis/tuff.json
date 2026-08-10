@@ -1,0 +1,16 @@
+{
+  "type": "geomancy:hearth_synthesis",
+  "ingredients": [
+    {
+      "count": 4,
+      "ingredient": "minecraft:flint"
+    },
+    {
+      "ingredient": "geomancy:amethyst_dust"
+    }
+  ],
+  "resonance_cost": 150,
+  "result": {
+    "id": "minecraft:tuff"
+  }
+}

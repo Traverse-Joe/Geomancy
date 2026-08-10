@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "geomancy:block/hearth_crystal",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "geomancy:block/hearth_crystal"
+    },
+    "facing=south": {
+      "model": "geomancy:block/hearth_crystal",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "geomancy:block/hearth_crystal",
+      "y": 270
+    }
+  }
+}

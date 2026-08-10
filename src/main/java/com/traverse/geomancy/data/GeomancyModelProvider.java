@@ -50,6 +50,9 @@ public class GeomancyModelProvider extends ModelProvider {
     private static final ModelTemplate RESONANT_BRAZIER_CORE = new ModelTemplate(
             Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/resonant_brazier_core")),
             Optional.empty(), TextureSlot.ALL);
+    private static final ModelTemplate HEARTH_CRYSTAL_CORE = new ModelTemplate(
+            Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/hearth_crystal_core")),
+            Optional.empty(), TextureSlot.ALL);
 
     public GeomancyModelProvider(PackOutput output) {
         super(output, Geomancy.MODID);
@@ -125,9 +128,17 @@ public class GeomancyModelProvider extends ModelProvider {
                         BlockModelGenerators.plainVariant(brazierUnlit))));
         blockModels.registerSimpleItemModel(brazier, brazierUnlit);
 
+        Block hearthCrystal = ModBlocks.HEARTH_CRYSTAL.get();
+        Identifier hearthCrystalModel = HEARTH_CRYSTAL_CORE.create(hearthCrystal,
+                textureOf("block/resonance_pillar"), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(hearthCrystal,
+                BlockModelGenerators.plainVariant(hearthCrystalModel)).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
+        blockModels.registerSimpleItemModel(hearthCrystal, hearthCrystalModel);
+
         itemModels.generateFlatItem(ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RESONANT_AMETHYST_FOCUS.get(), ModItems.RESONANT_AMETHYST_SHARD.get(),
                 ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.IRON_TUNING_FORK.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModels.generateFlatItem(ModItems.GEOMANCER_BELL.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.GEOMANCER_TUNING_HAMMER.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.ESSENCE_DEBUG_STICK.get(), ModItems.GEOMANCER_TUNING_HAMMER.get(),
@@ -140,8 +151,11 @@ public class GeomancyModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.COPPER_DUST.get(), ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.GOLD_DUST.get(), ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.SUBSTRATE_SLATE.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.ATTUNED_LENS_BLANK.get(), ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(ModItems.RESONANT_CRYSTAL_SEED.get(), ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RESONANCE_VESSEL.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.LITHIC_PICKAXE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        itemModels.generateFlatItem(ModItems.RESONANT_WAYFINDER.get(), ModItems.GEOMANCER_BELL.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
     }
 
     private static TextureMapping textureOf(String path) {
@@ -159,7 +173,8 @@ public class GeomancyModelProvider extends ModelProvider {
                 BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.GEODE_JAR.get()),
                 BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.PIEZO_ANVIL.get()),
                 BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANT_HEARTH.get()),
-                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANT_BRAZIER.get()));
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANT_BRAZIER.get()),
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.HEARTH_CRYSTAL.get()));
     }
 
     @Override
@@ -170,6 +185,7 @@ public class GeomancyModelProvider extends ModelProvider {
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANCE_JAR.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.ITEM_PEDESTAL_ITEM.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_AMETHYST_SHARD.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.IRON_TUNING_FORK.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.GEOMANCER_BELL.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.GEOMANCER_TUNING_HAMMER.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.ESSENCE_DEBUG_STICK.get()),
@@ -185,7 +201,11 @@ public class GeomancyModelProvider extends ModelProvider {
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.COPPER_DUST.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.GOLD_DUST.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.SUBSTRATE_SLATE.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.ATTUNED_LENS_BLANK.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_CRYSTAL_SEED.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANCE_VESSEL.get()),
-                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.LITHIC_PICKAXE.get()));
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.LITHIC_PICKAXE.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.HEARTH_CRYSTAL_ITEM.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_WAYFINDER.get()));
     }
 }
