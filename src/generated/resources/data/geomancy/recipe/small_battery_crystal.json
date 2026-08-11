@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "geomancy:resonant_amethyst_shard",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "ACA",
+    "C C",
+    "ACA"
+  ],
+  "result": {
+    "id": "geomancy:small_battery_crystal"
+  }
+}

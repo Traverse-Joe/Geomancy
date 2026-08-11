@@ -21,13 +21,14 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import com.traverse.geomancy.registry.ModRecipes;
+import com.traverse.geomancy.resonance.ResonanceCost;
 
-public record HearthSynthesisRecipe(List<HearthIngredient> ingredients, boolean requiresFocus, int resonanceCost, int duration,
+public record HearthSynthesisRecipe(List<HearthIngredient> ingredients, boolean requiresFocus, ResonanceCost cost, int duration,
                                     ItemStackTemplate result) implements Recipe<HearthSynthesisInput> {
     public static final MapCodec<HearthSynthesisRecipe> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             HearthIngredient.CODEC.listOf(1, 16).fieldOf("ingredients").forGetter(HearthSynthesisRecipe::ingredients),
             Codec.BOOL.optionalFieldOf("requires_focus", true).forGetter(HearthSynthesisRecipe::requiresFocus),
-            ExtraCodecs.POSITIVE_INT.fieldOf("resonance_cost").forGetter(HearthSynthesisRecipe::resonanceCost),
+            ResonanceCost.CODEC.fieldOf("resonance_cost").forGetter(HearthSynthesisRecipe::cost),
             ExtraCodecs.POSITIVE_INT.optionalFieldOf("duration", 20).forGetter(HearthSynthesisRecipe::duration),
             ItemStackTemplate.MAP_CODEC.codec().fieldOf("result").forGetter(HearthSynthesisRecipe::result)
     ).apply(instance, HearthSynthesisRecipe::new));
@@ -37,7 +38,7 @@ public record HearthSynthesisRecipe(List<HearthIngredient> ingredients, boolean 
                 ByteBufCodecs.VAR_INT.encode(buffer, recipe.ingredients.size());
                 recipe.ingredients.forEach(ingredient -> HearthIngredient.STREAM_CODEC.encode(buffer, ingredient));
                 ByteBufCodecs.BOOL.encode(buffer, recipe.requiresFocus);
-                ByteBufCodecs.VAR_INT.encode(buffer, recipe.resonanceCost);
+                ResonanceCost.STREAM_CODEC.encode(buffer, recipe.cost);
                 ByteBufCodecs.VAR_INT.encode(buffer, recipe.duration);
                 ItemStackTemplate.STREAM_CODEC.encode(buffer, recipe.result);
             },
@@ -47,7 +48,7 @@ public record HearthSynthesisRecipe(List<HearthIngredient> ingredients, boolean 
                 for (int i = 0; i < size; i++) {
                     ingredients.add(HearthIngredient.STREAM_CODEC.decode(buffer));
                 }
-                return new HearthSynthesisRecipe(ingredients, ByteBufCodecs.BOOL.decode(buffer), ByteBufCodecs.VAR_INT.decode(buffer),
+                return new HearthSynthesisRecipe(ingredients, ByteBufCodecs.BOOL.decode(buffer), ResonanceCost.STREAM_CODEC.decode(buffer),
                         ByteBufCodecs.VAR_INT.decode(buffer), ItemStackTemplate.STREAM_CODEC.decode(buffer));
             });
 

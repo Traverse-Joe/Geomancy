@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "M": "minecraft:smooth_stone",
+    "C": "minecraft:copper_ingot",
     "R": "geomancy:resonant_amethyst_shard",
     "S": "minecraft:stick"
   },
   "pattern": [
-    "M",
-    "R",
-    "S"
+    "C C",
+    " R ",
+    " S "
   ],
   "result": {
-    "id": "geomancy:geomancer_tuning_hammer"
+    "id": "geomancy:resonant_tuning_fork"
   }
 }

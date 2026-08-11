@@ -5,7 +5,9 @@
       "ingredient": "minecraft:amethyst_shard"
     }
   ],
-  "resonance_cost": 50,
+  "resonance_cost": {
+    "amount": 50
+  },
   "result": {
     "count": 2,
     "id": "geomancy:amethyst_dust"

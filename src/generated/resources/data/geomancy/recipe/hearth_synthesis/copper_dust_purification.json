@@ -8,7 +8,9 @@
       "ingredient": "geomancy:quartz_dust"
     }
   ],
-  "resonance_cost": 150,
+  "resonance_cost": {
+    "amount": 150
+  },
   "result": {
     "count": 2,
     "id": "geomancy:copper_dust"

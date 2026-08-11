@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "facing=down": {
+      "model": "geomancy:block/resonance_emitter",
+      "x": 90
+    },
+    "facing=east": {
+      "model": "geomancy:block/resonance_emitter",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "geomancy:block/resonance_emitter"
+    },
+    "facing=south": {
+      "model": "geomancy:block/resonance_emitter",
+      "y": 180
+    },
+    "facing=up": {
+      "model": "geomancy:block/resonance_emitter",
+      "x": 270
+    },
+    "facing=west": {
+      "model": "geomancy:block/resonance_emitter",
+      "y": 270
+    }
+  }
+}

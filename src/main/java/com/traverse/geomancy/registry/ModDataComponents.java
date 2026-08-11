@@ -44,6 +44,13 @@ public final class ModDataComponents {
                     .persistent(ExtraCodecs.NON_NEGATIVE_INT)
                     .networkSynchronized(ByteBufCodecs.VAR_INT));
 
+    // Toggled by shift-use-in-air on the Resonant Tuning Fork. Networked so the client
+    // renderer can read it straight off the held stack without a packet.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> BINDING_MODE =
+            DATA_COMPONENTS.registerComponentType("binding_mode", b -> b
+                    .persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL));
+
     // The Hearth Crystal a Resonant Wayfinder is bound to. The crystal itself stores
     // nothing; presence at this position is re-checked live at recall time.
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<WayfinderAnchor>> WAYFINDER_ANCHOR =

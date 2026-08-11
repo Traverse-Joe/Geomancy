@@ -14,7 +14,9 @@
       "ingredient": "geomancy:quartz_dust"
     }
   ],
-  "resonance_cost": 300,
+  "resonance_cost": {
+    "amount": 300
+  },
   "result": {
     "id": "geomancy:resonance_vessel"
   }

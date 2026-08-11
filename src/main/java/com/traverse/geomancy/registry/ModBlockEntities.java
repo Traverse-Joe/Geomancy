@@ -6,10 +6,14 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import com.traverse.geomancy.Geomancy;
+import com.traverse.geomancy.block.entity.BatteryCrystalBlockEntity;
+import com.traverse.geomancy.block.entity.ResonanceEmitterBlockEntity;
 import com.traverse.geomancy.block.entity.ResonanceJarBlockEntity;
 import com.traverse.geomancy.block.entity.ResonancePillarBlockEntity;
 import com.traverse.geomancy.block.entity.GeodeJarBlockEntity;
 import com.traverse.geomancy.block.entity.ItemPedestalBlockEntity;
+import com.traverse.geomancy.block.entity.PiezoAnvilBlockEntity;
+import com.traverse.geomancy.block.entity.ResonanceReceiverBlockEntity;
 import com.traverse.geomancy.block.entity.ResonantHearthBlockEntity;
 import com.traverse.geomancy.block.entity.ResonantBrazierBlockEntity;
 import com.traverse.geomancy.block.entity.TectonicNodeBlockEntity;
@@ -48,6 +52,23 @@ public final class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonantBrazierBlockEntity>> RESONANT_BRAZIER =
             BLOCK_ENTITIES.register("resonant_brazier", () -> new BlockEntityType<>(
                     ResonantBrazierBlockEntity::new, ModBlocks.RESONANT_BRAZIER.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BatteryCrystalBlockEntity>> BATTERY_CRYSTAL =
+            BLOCK_ENTITIES.register("battery_crystal", () -> new BlockEntityType<>(
+                    BatteryCrystalBlockEntity::new, ModBlocks.SMALL_BATTERY_CRYSTAL.get(),
+                    ModBlocks.MEDIUM_BATTERY_CRYSTAL.get(), ModBlocks.LARGE_BATTERY_CRYSTAL.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonanceEmitterBlockEntity>> RESONANCE_EMITTER =
+            BLOCK_ENTITIES.register("resonance_emitter", () -> new BlockEntityType<>(
+                    ResonanceEmitterBlockEntity::new, ModBlocks.RESONANCE_EMITTER.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PiezoAnvilBlockEntity>> PIEZO_ANVIL =
+            BLOCK_ENTITIES.register("piezo_anvil", () -> new BlockEntityType<>(
+                    PiezoAnvilBlockEntity::new, ModBlocks.PIEZO_ANVIL.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonanceReceiverBlockEntity>> RESONANCE_RECEIVER =
+            BLOCK_ENTITIES.register("resonance_receiver", () -> new BlockEntityType<>(
+                    ResonanceReceiverBlockEntity::new, ModBlocks.RESONANCE_RECEIVER.get()));
 
     public static void bootstrap() {
     }

@@ -1,0 +1,21 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "particle": "geomancy:block/resonance_pillar_linked",
+    "0": "geomancy:block/resonance_pillar_linked"
+  },
+  "elements": [
+    {
+      "from": [3.2, 3.2, 12],
+      "to": [12.8, 12.8, 16],
+      "faces": {
+        "down": {"uv": [3.2, 12, 12.8, 16], "texture": "#0"},
+        "up": {"uv": [3.2, 12, 12.8, 16], "texture": "#0"},
+        "north": {"uv": [3.2, 3.2, 12.8, 12.8], "texture": "#0"},
+        "south": {"uv": [3.2, 3.2, 12.8, 12.8], "texture": "#0"},
+        "west": {"uv": [12, 3.2, 16, 12.8], "texture": "#0"},
+        "east": {"uv": [12, 3.2, 16, 12.8], "texture": "#0"}
+      }
+    }
+  ]
+}

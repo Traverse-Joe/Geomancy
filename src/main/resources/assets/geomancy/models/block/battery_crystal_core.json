@@ -1,0 +1,94 @@
+{
+	"format_version": "1.21.11",
+	"credit": "Made with Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"0": "geomancy:block/raw_resonant_crystal",
+		"particle": "geomancy:block/raw_resonant_crystal"
+	},
+	"elements": [
+		{
+			"name": "Large Shard",
+			"from": [5, 2, 5],
+			"to": [11, 16, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [7, 2, 7]},
+			"faces": {
+				"north": {"uv": [2, 0, 3.5, 2.5], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [2, 2.5, 3.5, 5], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [3.5, 0, 5, 2.5], "texture": "#0", "tintindex": 0},
+				"west": {"uv": [3.5, 2.5, 5, 5], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [1.5, 5.5, 0, 4], "texture": "#0", "tintindex": 0},
+				"down": {"uv": [6.5, 0, 5, 1.5], "texture": "#0", "tintindex": 0}
+			}
+		},
+		{
+			"name": "Smaller Shard",
+			"from": [6, 1, 3],
+			"to": [10, 9, 6],
+			"rotation": {"angle": -25, "axis": "x", "origin": [7, 1, 4]},
+			"faces": {
+				"north": {"uv": [2.5, 5, 3.5, 7], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [1.75, 7, 2.5, 9], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [3.5, 5, 4.5, 7], "texture": "#0", "tintindex": 0},
+				"west": {"uv": [2.5, 7, 3.25, 9], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [8.5, 0.75, 7.5, 0], "texture": "#0", "tintindex": 0},
+				"down": {"uv": [8.5, 0.75, 7.5, 1.5], "texture": "#0", "tintindex": 0}
+			}
+		},
+		{
+			"name": "Smaller Shard",
+			"from": [6, 1, 10],
+			"to": [10, 9, 13],
+			"rotation": {"angle": 27.5, "axis": "x", "origin": [7, 1, 11]},
+			"faces": {
+				"north": {"uv": [5, 3.5, 6, 5.5], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [3.25, 7, 4, 9], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [0, 5.5, 1, 7.5], "texture": "#0", "tintindex": 0},
+				"west": {"uv": [7.25, 5.5, 8, 7.5], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [5.75, 8.25, 4.75, 7.5], "texture": "#0", "tintindex": 0},
+				"down": {"uv": [6.75, 7.5, 5.75, 8.25], "texture": "#0", "tintindex": 0}
+			}
+		},
+		{
+			"name": "Smaller Shard",
+			"from": [4, 1, 6],
+			"to": [8, 9, 9],
+			"rotation": {"x": 68.74345, "y": -83.42646, "z": -49.73643, "origin": [5, 1, 7]},
+			"faces": {
+				"north": {"uv": [1.5, 5, 2.5, 7], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [6.5, 5.5, 7.25, 7.5], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [5, 1.5, 6, 3.5], "texture": "#0", "tintindex": 0},
+				"west": {"uv": [1, 7, 1.75, 9], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [7.5, 0.75, 6.5, 0], "texture": "#0", "tintindex": 0},
+				"down": {"uv": [7.5, 0.75, 6.5, 1.5], "texture": "#0", "tintindex": 0}
+			}
+		},
+		{
+			"name": "Smaller Shard",
+			"from": [10, 1, 6],
+			"to": [14, 9, 9],
+			"rotation": {"x": 21.24345, "y": -83.42646, "z": -49.73643, "origin": [11, 1, 7]},
+			"faces": {
+				"north": {"uv": [4.5, 5.5, 5.5, 7.5], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [0, 7.5, 0.75, 9.5], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [5.5, 5.5, 6.5, 7.5], "texture": "#0", "tintindex": 0},
+				"west": {"uv": [4, 7.5, 4.75, 9.5], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [7.75, 8.25, 6.75, 7.5], "texture": "#0", "tintindex": 0},
+				"down": {"uv": [8.75, 7.5, 7.75, 8.25], "texture": "#0", "tintindex": 0}
+			}
+		},
+		{
+			"from": [4, 0, 4],
+			"to": [12, 4, 12],
+			"rotation": {"angle": 0, "axis": "y", "origin": [4, 0, 3]},
+			"faces": {
+				"north": {"uv": [6, 1.5, 8, 2.5], "texture": "#0", "tintindex": 0},
+				"east": {"uv": [6, 2.5, 8, 3.5], "texture": "#0", "tintindex": 0},
+				"south": {"uv": [6, 3.5, 8, 4.5], "texture": "#0", "tintindex": 0},
+				"west": {"uv": [6, 4.5, 8, 5.5], "texture": "#0", "tintindex": 0},
+				"up": {"uv": [2, 2, 0, 0], "texture": "#0", "tintindex": 0},
+				"down": {"uv": [2, 2, 0, 4], "texture": "#0", "tintindex": 0}
+			}
+		}
+	]
+}

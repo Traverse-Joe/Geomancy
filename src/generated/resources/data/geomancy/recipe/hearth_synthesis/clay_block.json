@@ -9,7 +9,9 @@
       "ingredient": "geomancy:quartz_dust"
     }
   ],
-  "resonance_cost": 100,
+  "resonance_cost": {
+    "amount": 100
+  },
   "result": {
     "id": "minecraft:clay"
   }

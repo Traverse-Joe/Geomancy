@@ -8,7 +8,9 @@
       "ingredient": "geomancy:quartz_dust"
     }
   ],
-  "resonance_cost": 400,
+  "resonance_cost": {
+    "amount": 400
+  },
   "result": {
     "id": "geomancy:resonant_crystal_seed"
   }

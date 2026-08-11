@@ -39,24 +39,14 @@ public class ResonantBrazierRenderer implements BlockEntityRenderer<ResonantBraz
     public void extractRenderState(ResonantBrazierBlockEntity brazier, ResonantBrazierRenderState state,
             float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(brazier, state, partialTicks, cameraPosition, breakProgress);
-        itemModels.updateForTopItem(state.fuel, brazier.items().get(ResonantBrazierBlockEntity.FUEL_SLOT),
+        itemModels.updateForTopItem(state.crystal, brazier.crystal(),
                 ItemDisplayContext.FIXED, brazier.getLevel(), null, 0);
-        itemModels.updateForTopItem(state.crystal, brazier.items().get(ResonantBrazierBlockEntity.CRYSTAL_SLOT),
-                ItemDisplayContext.FIXED, brazier.getLevel(), null, 1);
         state.time = brazier.getLevel() == null ? 0.0F : brazier.getLevel().getGameTime() + partialTicks;
     }
 
     @Override
     public void submit(ResonantBrazierRenderState state, PoseStack poseStack, SubmitNodeCollector collector,
             CameraRenderState camera) {
-        if (!state.fuel.isEmpty()) {
-            poseStack.pushPose();
-            poseStack.translate(0.5F, 0.38F, 0.5F);
-            poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-            poseStack.scale(0.38F, 0.38F, 0.38F);
-            state.fuel.submit(poseStack, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
-            poseStack.popPose();
-        }
         if (!state.crystal.isEmpty()) {
             poseStack.pushPose();
             poseStack.translate(0.5F, 1.08F + 0.04F * (float) Math.sin(state.time * 0.1F), 0.5F);

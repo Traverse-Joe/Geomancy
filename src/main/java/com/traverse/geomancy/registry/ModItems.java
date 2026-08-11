@@ -4,11 +4,12 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import com.traverse.geomancy.Geomancy;
+import com.traverse.geomancy.item.BatteryCrystalItem;
 import com.traverse.geomancy.item.GeomancerBellItem;
-import com.traverse.geomancy.item.GeomancerTuningHammerItem;
 import com.traverse.geomancy.item.EssenceDebugStickItem;
 import com.traverse.geomancy.item.GeomancerRoutingRodItem;
 import com.traverse.geomancy.item.ResonanceJarItem;
+import com.traverse.geomancy.item.ResonantTuningForkItem;
 import com.traverse.geomancy.item.GeodeJarItem;
 import com.traverse.geomancy.item.IronTuningForkItem;
 import com.traverse.geomancy.item.LithicPickaxeItem;
@@ -54,8 +55,8 @@ public final class ModItems {
     public static final DeferredItem<GeomancerBellItem> GEOMANCER_BELL =
             Geomancy.ITEMS.registerItem("geomancer_bell", GeomancerBellItem::new, p -> p.stacksTo(1));
 
-    public static final DeferredItem<GeomancerTuningHammerItem> GEOMANCER_TUNING_HAMMER =
-            Geomancy.ITEMS.registerItem("geomancer_tuning_hammer", GeomancerTuningHammerItem::new, p -> p.stacksTo(1));
+    public static final DeferredItem<ResonantTuningForkItem> RESONANT_TUNING_FORK =
+            Geomancy.ITEMS.registerItem("resonant_tuning_fork", ResonantTuningForkItem::new, p -> p.stacksTo(1));
 
     public static final DeferredItem<ResonanceJarItem> RESONANCE_JAR = Geomancy.ITEMS.registerItem(
             "resonance_jar", p -> new ResonanceJarItem(ModBlocks.RESONANCE_JAR.get(), p), p -> p.stacksTo(1));
@@ -63,6 +64,15 @@ public final class ModItems {
     public static final DeferredItem<GeodeJarItem> GEODE_JAR = Geomancy.ITEMS.registerItem(
             "geode_jar", properties -> new GeodeJarItem(ModBlocks.GEODE_JAR.get(), properties),
             properties -> properties.stacksTo(1));
+
+    public static final DeferredItem<BatteryCrystalItem> SMALL_BATTERY_CRYSTAL = Geomancy.ITEMS.registerItem(
+            "small_battery_crystal", p -> new BatteryCrystalItem(ModBlocks.SMALL_BATTERY_CRYSTAL.get(), p), p -> p.stacksTo(1));
+
+    public static final DeferredItem<BatteryCrystalItem> MEDIUM_BATTERY_CRYSTAL = Geomancy.ITEMS.registerItem(
+            "medium_battery_crystal", p -> new BatteryCrystalItem(ModBlocks.MEDIUM_BATTERY_CRYSTAL.get(), p), p -> p.stacksTo(1));
+
+    public static final DeferredItem<BatteryCrystalItem> LARGE_BATTERY_CRYSTAL = Geomancy.ITEMS.registerItem(
+            "large_battery_crystal", p -> new BatteryCrystalItem(ModBlocks.LARGE_BATTERY_CRYSTAL.get(), p), p -> p.stacksTo(1));
 
     public static final DeferredItem<EssenceDebugStickItem> ESSENCE_DEBUG_STICK = Geomancy.ITEMS.registerItem(
             "essence_debug_stick", EssenceDebugStickItem::new, p -> p.stacksTo(1));

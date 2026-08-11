@@ -50,8 +50,22 @@ public class GeomancyModelProvider extends ModelProvider {
     private static final ModelTemplate RESONANT_BRAZIER_CORE = new ModelTemplate(
             Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/resonant_brazier_core")),
             Optional.empty(), TextureSlot.ALL);
+    // The Pylon source model paints its obsidian "wings" and its runed-brick totem body as
+    // two distinct materials rather than one, so this keeps both instead of collapsing to
+    // a single texture like the mod's other placeholder shapes.
+    private static final TextureSlot HEARTH_CRYSTAL_PRIMARY = TextureSlot.create("2");
+    private static final TextureSlot HEARTH_CRYSTAL_SECONDARY = TextureSlot.create("3");
     private static final ModelTemplate HEARTH_CRYSTAL_CORE = new ModelTemplate(
             Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/hearth_crystal_core")),
+            Optional.empty(), HEARTH_CRYSTAL_PRIMARY, HEARTH_CRYSTAL_SECONDARY);
+    private static final ModelTemplate BATTERY_CRYSTAL_CORE = new ModelTemplate(
+            Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/battery_crystal_core")),
+            Optional.empty(), TextureSlot.ALL);
+    private static final ModelTemplate RESONANCE_EMITTER_CORE = new ModelTemplate(
+            Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/resonance_emitter_core")),
+            Optional.empty(), TextureSlot.ALL);
+    private static final ModelTemplate RESONANCE_RECEIVER_CORE = new ModelTemplate(
+            Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/resonance_receiver_core")),
             Optional.empty(), TextureSlot.ALL);
 
     public GeomancyModelProvider(PackOutput output) {
@@ -112,16 +126,16 @@ public class GeomancyModelProvider extends ModelProvider {
 
         Block hearth = ModBlocks.RESONANT_HEARTH.get();
         Identifier hearthModel = RESONANT_HEARTH_CORE.create(hearth,
-                textureOf("block/resonance_pillar"), blockModels.modelOutput);
+                textureOf("block/resonant_hearth"), blockModels.modelOutput);
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(hearth,
                 BlockModelGenerators.plainVariant(hearthModel)));
         blockModels.registerSimpleItemModel(hearth, hearthModel);
 
         Block brazier = ModBlocks.RESONANT_BRAZIER.get();
         Identifier brazierUnlit = RESONANT_BRAZIER_CORE.create(brazier,
-                textureOf("block/resonance_pillar"), blockModels.modelOutput);
+                textureOf("block/resonant_brazier"), blockModels.modelOutput);
         Identifier brazierLit = RESONANT_BRAZIER_CORE.createWithSuffix(brazier, "_lit",
-                textureOf("block/resonance_pillar_linked"), blockModels.modelOutput);
+                textureOf("block/resonant_brazier_lit"), blockModels.modelOutput);
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(brazier).with(
                 BlockModelGenerators.createBooleanModelDispatch(ResonantBrazierBlock.LIT,
                         BlockModelGenerators.plainVariant(brazierLit),
@@ -129,21 +143,54 @@ public class GeomancyModelProvider extends ModelProvider {
         blockModels.registerSimpleItemModel(brazier, brazierUnlit);
 
         Block hearthCrystal = ModBlocks.HEARTH_CRYSTAL.get();
+        TextureMapping hearthCrystalTextures = new TextureMapping()
+                .put(HEARTH_CRYSTAL_PRIMARY, new Material(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/hearth_crystal_primary"), false))
+                .put(HEARTH_CRYSTAL_SECONDARY, new Material(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/hearth_crystal_secondary"), false));
         Identifier hearthCrystalModel = HEARTH_CRYSTAL_CORE.create(hearthCrystal,
-                textureOf("block/resonance_pillar"), blockModels.modelOutput);
+                hearthCrystalTextures, blockModels.modelOutput);
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(hearthCrystal,
                 BlockModelGenerators.plainVariant(hearthCrystalModel)).with(BlockModelGenerators.ROTATION_HORIZONTAL_FACING));
         blockModels.registerSimpleItemModel(hearthCrystal, hearthCrystalModel);
+
+        Block smallBattery = ModBlocks.SMALL_BATTERY_CRYSTAL.get();
+        Identifier smallBatteryModel = BATTERY_CRYSTAL_CORE.create(smallBattery, textureOf("block/raw_resonant_crystal"), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(smallBattery,
+                BlockModelGenerators.plainVariant(smallBatteryModel)));
+        blockModels.registerSimpleItemModel(smallBattery, smallBatteryModel);
+
+        Block mediumBattery = ModBlocks.MEDIUM_BATTERY_CRYSTAL.get();
+        Identifier mediumBatteryModel = BATTERY_CRYSTAL_CORE.create(mediumBattery, textureOf("block/raw_resonant_crystal"), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(mediumBattery,
+                BlockModelGenerators.plainVariant(mediumBatteryModel)));
+        blockModels.registerSimpleItemModel(mediumBattery, mediumBatteryModel);
+
+        Block largeBattery = ModBlocks.LARGE_BATTERY_CRYSTAL.get();
+        Identifier largeBatteryModel = BATTERY_CRYSTAL_CORE.create(largeBattery, textureOf("block/raw_resonant_crystal"), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(largeBattery,
+                BlockModelGenerators.plainVariant(largeBatteryModel)));
+        blockModels.registerSimpleItemModel(largeBattery, largeBatteryModel);
+
+        Block emitter = ModBlocks.RESONANCE_EMITTER.get();
+        Identifier emitterModel = RESONANCE_EMITTER_CORE.create(emitter, textureOf("block/resonance_pillar"), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(emitter,
+                BlockModelGenerators.plainVariant(emitterModel)).with(BlockModelGenerators.ROTATION_FACING));
+        blockModels.registerSimpleItemModel(emitter, emitterModel);
+
+        Block receiver = ModBlocks.RESONANCE_RECEIVER.get();
+        Identifier receiverModel = RESONANCE_RECEIVER_CORE.create(receiver, textureOf("block/resonance_pillar_linked"), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(receiver,
+                BlockModelGenerators.plainVariant(receiverModel)).with(BlockModelGenerators.ROTATION_FACING));
+        blockModels.registerSimpleItemModel(receiver, receiverModel);
 
         itemModels.generateFlatItem(ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RESONANT_AMETHYST_FOCUS.get(), ModItems.RESONANT_AMETHYST_SHARD.get(),
                 ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.IRON_TUNING_FORK.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModels.generateFlatItem(ModItems.GEOMANCER_BELL.get(), ModelTemplates.FLAT_ITEM);
-        itemModels.generateFlatItem(ModItems.GEOMANCER_TUNING_HAMMER.get(), ModelTemplates.FLAT_ITEM);
-        itemModels.generateFlatItem(ModItems.ESSENCE_DEBUG_STICK.get(), ModItems.GEOMANCER_TUNING_HAMMER.get(),
+        itemModels.generateFlatItem(ModItems.RESONANT_TUNING_FORK.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        itemModels.generateFlatItem(ModItems.ESSENCE_DEBUG_STICK.get(), ModItems.RESONANT_TUNING_FORK.get(),
                 ModelTemplates.FLAT_ITEM);
-        itemModels.generateFlatItem(ModItems.GEOMANCER_ROUTING_ROD.get(), ModItems.GEOMANCER_TUNING_HAMMER.get(),
+        itemModels.generateFlatItem(ModItems.GEOMANCER_ROUTING_ROD.get(), ModItems.RESONANT_TUNING_FORK.get(),
                 ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModels.generateFlatItem(ModItems.QUARTZ_DUST.get(), ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.AMETHYST_DUST.get(), ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
@@ -174,7 +221,12 @@ public class GeomancyModelProvider extends ModelProvider {
                 BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.PIEZO_ANVIL.get()),
                 BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANT_HEARTH.get()),
                 BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANT_BRAZIER.get()),
-                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.HEARTH_CRYSTAL.get()));
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.HEARTH_CRYSTAL.get()),
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.SMALL_BATTERY_CRYSTAL.get()),
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.MEDIUM_BATTERY_CRYSTAL.get()),
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.LARGE_BATTERY_CRYSTAL.get()),
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANCE_EMITTER.get()),
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANCE_RECEIVER.get()));
     }
 
     @Override
@@ -187,7 +239,7 @@ public class GeomancyModelProvider extends ModelProvider {
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_AMETHYST_SHARD.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.IRON_TUNING_FORK.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.GEOMANCER_BELL.get()),
-                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.GEOMANCER_TUNING_HAMMER.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_TUNING_FORK.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.ESSENCE_DEBUG_STICK.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.GEOMANCER_ROUTING_ROD.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_AMETHYST_FOCUS.get()),
@@ -206,6 +258,11 @@ public class GeomancyModelProvider extends ModelProvider {
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANCE_VESSEL.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.LITHIC_PICKAXE.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.HEARTH_CRYSTAL_ITEM.get()),
-                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_WAYFINDER.get()));
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_WAYFINDER.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.SMALL_BATTERY_CRYSTAL.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.MEDIUM_BATTERY_CRYSTAL.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.LARGE_BATTERY_CRYSTAL.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.RESONANCE_EMITTER_ITEM.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.RESONANCE_RECEIVER_ITEM.get()));
     }
 }

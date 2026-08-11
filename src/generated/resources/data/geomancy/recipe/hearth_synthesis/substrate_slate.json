@@ -8,7 +8,9 @@
       "ingredient": "geomancy:amethyst_dust"
     }
   ],
-  "resonance_cost": 150,
+  "resonance_cost": {
+    "amount": 150
+  },
   "result": {
     "id": "geomancy:substrate_slate"
   }

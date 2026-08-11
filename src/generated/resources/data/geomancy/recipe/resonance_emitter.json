@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "D": "minecraft:redstone",
+    "R": "geomancy:resonant_amethyst_shard"
+  },
+  "pattern": [
+    "CDC",
+    " R "
+  ],
+  "result": {
+    "id": "geomancy:resonance_emitter"
+  }
+}

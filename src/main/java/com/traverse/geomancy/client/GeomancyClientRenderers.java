@@ -21,6 +21,7 @@ public final class GeomancyClientRenderers {
         event.registerBlockEntityRenderer(ModBlockEntities.ITEM_PEDESTAL.get(), ItemPedestalRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.RESONANT_HEARTH.get(), ResonantHearthRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.RESONANT_BRAZIER.get(), ResonantBrazierRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.GEODE_JAR.get(), GeodeJarRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.GEODE_JAR.get(), ResonanceFillRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_EMITTER.get(), ResonanceEmitterRenderer::new);
     }
 }

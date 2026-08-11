@@ -11,36 +11,40 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import com.traverse.geomancy.block.entity.GeodeJarBlockEntity;
+import com.traverse.geomancy.resonance.ResonanceStorage;
 
-public class GeodeJarRenderer implements BlockEntityRenderer<GeodeJarBlockEntity, GeodeJarRenderState> {
+// Shared by every plain ResonanceStorage crystal - the Geode Jar and all three Battery
+// Crystal sizes - so upgrading a battery's storage tier is a visible glow, not just a tooltip.
+public class ResonanceFillRenderer<T extends BlockEntity & ResonanceStorage>
+        implements BlockEntityRenderer<T, ResonanceFillRenderState> {
     private static final int RESONANCE_COLOR = 0xB0804CFF;
 
-    public GeodeJarRenderer(BlockEntityRendererProvider.Context context) {
+    public ResonanceFillRenderer(BlockEntityRendererProvider.Context context) {
     }
 
     @Override
-    public GeodeJarRenderState createRenderState() {
-        return new GeodeJarRenderState();
+    public ResonanceFillRenderState createRenderState() {
+        return new ResonanceFillRenderState();
     }
 
     @Override
-    public AABB getRenderBoundingBox(GeodeJarBlockEntity jar) {
-        return new AABB(jar.getBlockPos());
+    public AABB getRenderBoundingBox(T crystal) {
+        return new AABB(crystal.getBlockPos());
     }
 
     @Override
-    public void extractRenderState(GeodeJarBlockEntity jar, GeodeJarRenderState state, float partialTicks,
+    public void extractRenderState(T crystal, ResonanceFillRenderState state, float partialTicks,
             Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
-        BlockEntityRenderer.super.extractRenderState(jar, state, partialTicks, cameraPosition, breakProgress);
-        state.fill = jar.capacity() == 0 ? 0.0F : (float) jar.resonance() / jar.capacity();
+        BlockEntityRenderer.super.extractRenderState(crystal, state, partialTicks, cameraPosition, breakProgress);
+        state.fill = crystal.capacity() == 0 ? 0.0F : (float) crystal.resonance() / crystal.capacity();
     }
 
     @Override
-    public void submit(GeodeJarRenderState state, PoseStack poseStack, SubmitNodeCollector collector,
+    public void submit(ResonanceFillRenderState state, PoseStack poseStack, SubmitNodeCollector collector,
             CameraRenderState camera) {
         if (state.fill <= 0.0F) {
             return;

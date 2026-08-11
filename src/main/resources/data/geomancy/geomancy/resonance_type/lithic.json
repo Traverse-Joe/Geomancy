@@ -1,0 +1,8 @@
+{
+  "color": 9280867,
+  "pitch": 0.6,
+  "range_multiplier": 0.9,
+  "dampening_resistance": 0.0,
+  "furnace_speed": 0.0,
+  "source_biomes": "#geomancy:lithic_source"
+}

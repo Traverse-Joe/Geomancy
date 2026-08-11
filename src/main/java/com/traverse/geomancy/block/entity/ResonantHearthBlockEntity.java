@@ -38,11 +38,17 @@ import com.traverse.geomancy.registry.ModBlockEntities;
 import com.traverse.geomancy.registry.ModRecipes;
 import com.traverse.geomancy.resonance.ResonanceStorage;
 
-public class ResonantHearthBlockEntity extends BlockEntity {
+public class ResonantHearthBlockEntity extends BlockEntity implements ResonanceStorage {
     public static final int MAX_INGREDIENTS = 8;
+
+    // Sized to comfortably cover the costliest current recipe (750, the Lithic Pickaxe),
+    // with headroom - not a battery, but enough that a receiver bound to the Hearth can
+    // actually bank up for a real synthesis rather than only ever passing resonance through.
+    private static final int BUFFER_CAPACITY = 1_000;
 
     private final NonNullList<ItemStack> ingredients = NonNullList.withSize(MAX_INGREDIENTS, ItemStack.EMPTY);
     private ItemStack focus = ItemStack.EMPTY;
+    private int buffer;
 
     public ResonantHearthBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.RESONANT_HEARTH.get(), pos, state);
@@ -71,14 +77,15 @@ public class ResonantHearthBlockEntity extends BlockEntity {
         }
 
         HearthSynthesisRecipe recipe = holder.value();
-        ResonanceStorage storage = adjacentStorage(serverLevel, recipe.resonanceCost());
+        int resonanceCost = recipe.cost().amount();
+        ResonanceStorage storage = resonanceSource(serverLevel, resonanceCost);
         if (storage == null) {
-            feedback(player, "block.geomancy.resonant_hearth.no_resonance", recipe.resonanceCost());
+            feedback(player, "block.geomancy.resonant_hearth.no_resonance", resonanceCost);
             fail(serverLevel);
             return;
         }
 
-        if (storage.extractResonance(recipe.resonanceCost(), false) != recipe.resonanceCost()) {
+        if (storage.extractResonance(resonanceCost, false) != resonanceCost) {
             throw new IllegalStateException("Simulated Hearth resonance extraction did not match actual extraction");
         }
         entities.forEach(ItemEntity::discard);
@@ -167,14 +174,50 @@ public class ResonantHearthBlockEntity extends BlockEntity {
         }
     }
 
-    private ResonanceStorage adjacentStorage(ServerLevel level, int required) {
-        for (Direction direction : Direction.Plane.HORIZONTAL) {
+    // Checks its own receiver-fed buffer first, then falls back to adjacent storage - a
+    // receiver mounted on the Hearth's face inserts here through the same generic
+    // ResonanceStorage path every other receiver target uses.
+    private ResonanceStorage resonanceSource(ServerLevel level, int required) {
+        if (extractResonance(required, true) == required) {
+            return this;
+        }
+        for (Direction direction : Direction.values()) {
             if (level.getBlockEntity(worldPosition.relative(direction)) instanceof ResonanceStorage storage
                     && storage.extractResonance(required, true) == required) {
                 return storage;
             }
         }
         return null;
+    }
+
+    @Override
+    public int resonance() {
+        return buffer;
+    }
+
+    @Override
+    public int capacity() {
+        return BUFFER_CAPACITY;
+    }
+
+    @Override
+    public int insertResonance(int amount, boolean simulate) {
+        int accepted = Math.min(Math.max(amount, 0), capacity() - buffer);
+        if (!simulate && accepted > 0) {
+            buffer += accepted;
+            sync();
+        }
+        return accepted;
+    }
+
+    @Override
+    public int extractResonance(int amount, boolean simulate) {
+        int extracted = Math.min(Math.max(amount, 0), buffer);
+        if (!simulate && extracted > 0) {
+            buffer -= extracted;
+            sync();
+        }
+        return extracted;
     }
 
     private void fail(ServerLevel level) {

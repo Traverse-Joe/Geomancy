@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "geomancy:stored_resonance"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "geomancy:large_battery_crystal"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "geomancy:blocks/large_battery_crystal"
+}

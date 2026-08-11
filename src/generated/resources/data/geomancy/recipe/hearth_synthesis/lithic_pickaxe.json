@@ -20,7 +20,9 @@
       "ingredient": "geomancy:substrate_slate"
     }
   ],
-  "resonance_cost": 750,
+  "resonance_cost": {
+    "amount": 750
+  },
   "result": {
     "id": "geomancy:lithic_pickaxe"
   }

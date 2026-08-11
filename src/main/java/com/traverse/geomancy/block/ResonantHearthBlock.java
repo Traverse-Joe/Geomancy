@@ -21,15 +21,13 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.traverse.geomancy.block.entity.ResonantHearthBlockEntity;
-import com.traverse.geomancy.item.GeomancerTuningHammerItem;
+import com.traverse.geomancy.item.ResonantTuningForkItem;
 
 public class ResonantHearthBlock extends Block implements EntityBlock {
-    private static final VoxelShape SHAPE = Shapes.or(
-            Shapes.box(0.0, 0.0, 0.0, 1.0, 0.25, 1.0),
-            Shapes.box(0.0, 0.25, 0.0, 0.1875, 0.75, 1.0),
-            Shapes.box(0.8125, 0.25, 0.0, 1.0, 0.75, 1.0),
-            Shapes.box(0.1875, 0.25, 0.0, 0.8125, 0.75, 0.1875),
-            Shapes.box(0.1875, 0.25, 0.8125, 0.8125, 0.75, 1.0));
+    // The current model is a solid altar on corner legs, not an open-fronted basin, so a
+    // single box matching its footprint (full width) and height (up to the rim at y=13/16)
+    // fits better than the old walled-basin composite.
+    private static final VoxelShape SHAPE = Shapes.box(0.0, 0.0, 0.0, 1.0, 0.8125, 1.0);
 
     public ResonantHearthBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -47,7 +45,7 @@ public class ResonantHearthBlock extends Block implements EntityBlock {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         if (level.getBlockEntity(pos) instanceof ResonantHearthBlockEntity hearth) {
-            if (stack.getItem() instanceof GeomancerTuningHammerItem) {
+            if (stack.getItem() instanceof ResonantTuningForkItem) {
                 if (!level.isClientSide()) {
                     hearth.activate(player);
                 }

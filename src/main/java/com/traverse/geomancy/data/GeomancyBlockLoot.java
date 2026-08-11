@@ -6,6 +6,7 @@ import java.util.Set;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -31,7 +32,10 @@ public class GeomancyBlockLoot extends BlockLootSubProvider {
     protected Iterable<Block> getKnownBlocks() {
         return List.of(ModBlocks.RESONANCE_PILLAR.get(), ModBlocks.RESONANCE_JAR.get(), ModBlocks.ITEM_PEDESTAL.get(),
                 ModBlocks.GEODE_JAR.get(), ModBlocks.PIEZO_ANVIL.get(), ModBlocks.RESONANT_HEARTH.get(),
-                ModBlocks.RESONANT_BRAZIER.get(), ModBlocks.HEARTH_CRYSTAL.get());
+                ModBlocks.RESONANT_BRAZIER.get(), ModBlocks.HEARTH_CRYSTAL.get(),
+                ModBlocks.SMALL_BATTERY_CRYSTAL.get(), ModBlocks.MEDIUM_BATTERY_CRYSTAL.get(),
+                ModBlocks.LARGE_BATTERY_CRYSTAL.get(), ModBlocks.RESONANCE_EMITTER.get(),
+                ModBlocks.RESONANCE_RECEIVER.get());
     }
 
     @Override
@@ -42,6 +46,8 @@ public class GeomancyBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.RESONANT_HEARTH.get());
         dropSelf(ModBlocks.RESONANT_BRAZIER.get());
         dropSelf(ModBlocks.HEARTH_CRYSTAL.get());
+        dropSelf(ModBlocks.RESONANCE_EMITTER.get());
+        dropSelf(ModBlocks.RESONANCE_RECEIVER.get());
 
         Block jar = ModBlocks.RESONANCE_JAR.get();
         add(jar, LootTable.lootTable().withPool(applyExplosionCondition(jar,
@@ -54,6 +60,18 @@ public class GeomancyBlockLoot extends BlockLootSubProvider {
         add(geodeJar, LootTable.lootTable().withPool(applyExplosionCondition(geodeJar,
                 LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(
                         LootItem.lootTableItem(ModItems.GEODE_JAR.get()).apply(
+                                CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
+                                        .include(ModDataComponents.STORED_RESONANCE.get()))))));
+
+        batteryCrystal(ModBlocks.SMALL_BATTERY_CRYSTAL.get(), ModItems.SMALL_BATTERY_CRYSTAL.get());
+        batteryCrystal(ModBlocks.MEDIUM_BATTERY_CRYSTAL.get(), ModItems.MEDIUM_BATTERY_CRYSTAL.get());
+        batteryCrystal(ModBlocks.LARGE_BATTERY_CRYSTAL.get(), ModItems.LARGE_BATTERY_CRYSTAL.get());
+    }
+
+    private void batteryCrystal(Block block, Item item) {
+        add(block, LootTable.lootTable().withPool(applyExplosionCondition(block,
+                LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(
+                        LootItem.lootTableItem(item).apply(
                                 CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
                                         .include(ModDataComponents.STORED_RESONANCE.get()))))));
     }

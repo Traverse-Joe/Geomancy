@@ -1,0 +1,6 @@
+{
+  "parent": "geomancy:block/battery_crystal_core",
+  "textures": {
+    "all": "geomancy:block/raw_resonant_crystal"
+  }
+}

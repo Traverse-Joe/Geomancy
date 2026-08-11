@@ -12,7 +12,9 @@
     }
   ],
   "requires_focus": false,
-  "resonance_cost": 500,
+  "resonance_cost": {
+    "amount": 500
+  },
   "result": {
     "id": "geomancy:resonant_amethyst_focus"
   }

@@ -1,6 +1,7 @@
 {
   "parent": "geomancy:block/hearth_crystal_core",
   "textures": {
-    "all": "geomancy:block/resonance_pillar"
+    "2": "geomancy:block/hearth_crystal_primary",
+    "3": "geomancy:block/hearth_crystal_secondary"
   }
 }

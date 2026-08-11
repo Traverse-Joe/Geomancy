@@ -7,8 +7,11 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 
 import com.traverse.geomancy.Geomancy;
+import com.traverse.geomancy.block.BatteryCrystalBlock;
+import com.traverse.geomancy.block.ResonanceEmitterBlock;
 import com.traverse.geomancy.block.ResonanceJarBlock;
 import com.traverse.geomancy.block.ResonancePillarBlock;
+import com.traverse.geomancy.block.ResonanceReceiverBlock;
 import com.traverse.geomancy.block.GeodeJarBlock;
 import com.traverse.geomancy.block.HearthCrystalBlock;
 import com.traverse.geomancy.block.ItemPedestalBlock;
@@ -16,6 +19,7 @@ import com.traverse.geomancy.block.PiezoAnvilBlock;
 import com.traverse.geomancy.block.ResonantHearthBlock;
 import com.traverse.geomancy.block.ResonantBrazierBlock;
 import com.traverse.geomancy.block.TectonicNodeBlock;
+import com.traverse.geomancy.resonance.BatterySize;
 
 public final class ModBlocks {
     private ModBlocks() {
@@ -106,6 +110,47 @@ public final class ModBlocks {
 
     public static final DeferredItem<BlockItem> HEARTH_CRYSTAL_ITEM =
             Geomancy.ITEMS.registerSimpleBlockItem(HEARTH_CRYSTAL);
+
+    // Item is custom (BatteryCrystalItem, in ModItems) so its stored-resonance tooltip
+    // reads the right capacity per size and its component survives round-tripping.
+    public static final DeferredBlock<BatteryCrystalBlock> SMALL_BATTERY_CRYSTAL = Geomancy.BLOCKS.registerBlock(
+            "small_battery_crystal", p -> new BatteryCrystalBlock(BatterySize.SMALL, p), p -> p
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .strength(2.0F)
+                    .lightLevel(state -> BatteryCrystalBlock.lightForLevel(state.getValue(BatteryCrystalBlock.FILL_LEVEL)))
+                    .noOcclusion());
+
+    public static final DeferredBlock<BatteryCrystalBlock> MEDIUM_BATTERY_CRYSTAL = Geomancy.BLOCKS.registerBlock(
+            "medium_battery_crystal", p -> new BatteryCrystalBlock(BatterySize.MEDIUM, p), p -> p
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .strength(2.5F)
+                    .lightLevel(state -> BatteryCrystalBlock.lightForLevel(state.getValue(BatteryCrystalBlock.FILL_LEVEL)))
+                    .noOcclusion());
+
+    public static final DeferredBlock<BatteryCrystalBlock> LARGE_BATTERY_CRYSTAL = Geomancy.BLOCKS.registerBlock(
+            "large_battery_crystal", p -> new BatteryCrystalBlock(BatterySize.LARGE, p), p -> p
+                    .mapColor(MapColor.COLOR_PURPLE)
+                    .strength(3.0F)
+                    .lightLevel(state -> BatteryCrystalBlock.lightForLevel(state.getValue(BatteryCrystalBlock.FILL_LEVEL)))
+                    .noOcclusion());
+
+    public static final DeferredBlock<ResonanceEmitterBlock> RESONANCE_EMITTER = Geomancy.BLOCKS.registerBlock(
+            "resonance_emitter", ResonanceEmitterBlock::new, p -> p
+                    .mapColor(MapColor.STONE)
+                    .strength(1.5F)
+                    .noOcclusion());
+
+    public static final DeferredItem<BlockItem> RESONANCE_EMITTER_ITEM =
+            Geomancy.ITEMS.registerSimpleBlockItem(RESONANCE_EMITTER);
+
+    public static final DeferredBlock<ResonanceReceiverBlock> RESONANCE_RECEIVER = Geomancy.BLOCKS.registerBlock(
+            "resonance_receiver", ResonanceReceiverBlock::new, p -> p
+                    .mapColor(MapColor.STONE)
+                    .strength(1.5F)
+                    .noOcclusion());
+
+    public static final DeferredItem<BlockItem> RESONANCE_RECEIVER_ITEM =
+            Geomancy.ITEMS.registerSimpleBlockItem(RESONANCE_RECEIVER);
 
     // Forces static init before Geomancy.BLOCKS.register(bus) runs.
     public static void bootstrap() {

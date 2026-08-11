@@ -1,6 +1,6 @@
 {
   "parent": "geomancy:block/resonant_brazier_core",
   "textures": {
-    "all": "geomancy:block/resonance_pillar_linked"
+    "all": "geomancy:block/resonant_brazier_lit"
   }
 }

@@ -25,7 +25,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.traverse.geomancy.block.entity.ItemPedestalBlockEntity;
-import com.traverse.geomancy.item.GeomancerTuningHammerItem;
+import com.traverse.geomancy.item.ResonantTuningForkItem;
 import com.traverse.geomancy.item.GeomancerRoutingRodItem;
 import com.traverse.geomancy.registry.ModBlockEntities;
 
@@ -47,7 +47,7 @@ public class ItemPedestalBlock extends Block implements EntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hit) {
-        if (stack.getItem() instanceof GeomancerTuningHammerItem || stack.getItem() instanceof GeomancerRoutingRodItem) {
+        if (stack.getItem() instanceof ResonantTuningForkItem || stack.getItem() instanceof GeomancerRoutingRodItem) {
             return InteractionResult.PASS;
         }
         if (!(level.getBlockEntity(pos) instanceof ItemPedestalBlockEntity pedestal) || !pedestal.isEmpty()) {

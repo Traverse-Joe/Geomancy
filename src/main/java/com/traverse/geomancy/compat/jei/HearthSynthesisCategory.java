@@ -93,7 +93,7 @@ public class HearthSynthesisCategory implements IRecipeCategory<RecipeHolder<Hea
             GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         HearthSynthesisRecipe recipe = holder.value();
         guiGraphics.text(Minecraft.getInstance().font,
-                Component.translatable("geomancy.jei.resonance_cost", recipe.resonanceCost()),
+                Component.translatable("geomancy.jei.resonance_cost", recipe.cost().amount()),
                 4, 70, TEXT_COLOR);
         if (recipe.requiresFocus()) {
             guiGraphics.text(Minecraft.getInstance().font,

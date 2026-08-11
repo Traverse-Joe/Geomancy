@@ -22,6 +22,7 @@ import com.traverse.geomancy.registry.ModDataComponents;
 import com.traverse.geomancy.registry.ModFeatures;
 import com.traverse.geomancy.registry.ModItems;
 import com.traverse.geomancy.registry.ModRecipes;
+import com.traverse.geomancy.registry.ModRegistries;
 
 @Mod(Geomancy.MODID)
 public class Geomancy {
@@ -40,7 +41,7 @@ public class Geomancy {
                 output.accept(ModItems.RESONANT_AMETHYST_FOCUS.get());
                 output.accept(ModItems.IRON_TUNING_FORK.get());
                 output.accept(ModItems.GEOMANCER_BELL.get());
-                output.accept(ModItems.GEOMANCER_TUNING_HAMMER.get());
+                output.accept(ModItems.RESONANT_TUNING_FORK.get());
                 output.accept(ModBlocks.RESONANCE_PILLAR_ITEM);
                 output.accept(ModBlocks.ITEM_PEDESTAL_ITEM);
                 output.accept(ModItems.RESONANCE_JAR.get());
@@ -63,6 +64,11 @@ public class Geomancy {
                 output.accept(ModItems.LITHIC_PICKAXE.get());
                 output.accept(ModBlocks.HEARTH_CRYSTAL_ITEM);
                 output.accept(ModItems.RESONANT_WAYFINDER.get());
+                output.accept(ModItems.SMALL_BATTERY_CRYSTAL.get());
+                output.accept(ModItems.MEDIUM_BATTERY_CRYSTAL.get());
+                output.accept(ModItems.LARGE_BATTERY_CRYSTAL.get());
+                output.accept(ModBlocks.RESONANCE_EMITTER_ITEM);
+                output.accept(ModBlocks.RESONANCE_RECEIVER_ITEM);
             }).build());
 
     public Geomancy(IEventBus modEventBus, ModContainer modContainer) {
@@ -85,6 +91,7 @@ public class Geomancy {
         ModRecipes.RECIPE_SERIALIZERS.register(modEventBus);
         ModRecipes.RECIPE_BOOK_CATEGORIES.register(modEventBus);
         ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
+        modEventBus.addListener(ModRegistries::registerDataPackRegistries);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

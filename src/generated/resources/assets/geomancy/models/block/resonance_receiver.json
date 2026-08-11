@@ -1,0 +1,6 @@
+{
+  "parent": "geomancy:block/resonance_receiver_core",
+  "textures": {
+    "all": "geomancy:block/resonance_pillar_linked"
+  }
+}

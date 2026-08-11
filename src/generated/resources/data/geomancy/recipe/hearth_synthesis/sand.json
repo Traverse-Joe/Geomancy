@@ -5,7 +5,9 @@
       "ingredient": "minecraft:gravel"
     }
   ],
-  "resonance_cost": 20,
+  "resonance_cost": {
+    "amount": 20
+  },
   "result": {
     "id": "minecraft:sand"
   }

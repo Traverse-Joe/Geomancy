@@ -11,7 +11,9 @@
       "ingredient": "geomancy:amethyst_dust"
     }
   ],
-  "resonance_cost": 250,
+  "resonance_cost": {
+    "amount": 250
+  },
   "result": {
     "id": "geomancy:attuned_lens_blank"
   }

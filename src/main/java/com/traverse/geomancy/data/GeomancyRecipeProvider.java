@@ -35,6 +35,7 @@ import com.traverse.geomancy.recipe.TransmutationResult;
 import com.traverse.geomancy.recipe.TransmutationSubject;
 import com.traverse.geomancy.registry.ModBlocks;
 import com.traverse.geomancy.registry.ModItems;
+import com.traverse.geomancy.resonance.ResonanceCost;
 
 public class GeomancyRecipeProvider extends RecipeProvider {
     protected GeomancyRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
@@ -70,13 +71,13 @@ public class GeomancyRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
                 .save(output);
 
-        shaped(RecipeCategory.TOOLS, ModItems.GEOMANCER_TUNING_HAMMER.get())
-                .define('M', Blocks.SMOOTH_STONE)
+        shaped(RecipeCategory.TOOLS, ModItems.RESONANT_TUNING_FORK.get())
+                .define('C', Items.COPPER_INGOT)
                 .define('R', ModItems.RESONANT_AMETHYST_SHARD.get())
                 .define('S', Items.STICK)
-                .pattern("M")
-                .pattern("R")
-                .pattern("S")
+                .pattern("C C")
+                .pattern(" R ")
+                .pattern(" S ")
                 .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
                 .save(output);
 
@@ -138,6 +139,50 @@ public class GeomancyRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_amethyst_shard", has(Items.AMETHYST_SHARD))
                 .save(output);
 
+        shaped(RecipeCategory.MISC, ModBlocks.SMALL_BATTERY_CRYSTAL.get())
+                .define('A', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .define('C', Items.COPPER_INGOT)
+                .pattern("ACA")
+                .pattern("C C")
+                .pattern("ACA")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModBlocks.MEDIUM_BATTERY_CRYSTAL.get())
+                .define('A', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .define('B', ModBlocks.SMALL_BATTERY_CRYSTAL.get())
+                .pattern("AAA")
+                .pattern("ABA")
+                .pattern("AAA")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModBlocks.LARGE_BATTERY_CRYSTAL.get())
+                .define('A', Blocks.AMETHYST_BLOCK)
+                .define('B', ModBlocks.MEDIUM_BATTERY_CRYSTAL.get())
+                .pattern("AAA")
+                .pattern("ABA")
+                .pattern("AAA")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModBlocks.RESONANCE_EMITTER.get())
+                .define('C', Items.COPPER_INGOT)
+                .define('R', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .define('D', Items.REDSTONE)
+                .pattern("CDC")
+                .pattern(" R ")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.MISC, ModBlocks.RESONANCE_RECEIVER.get())
+                .define('C', Items.COPPER_INGOT)
+                .define('R', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .pattern("CCC")
+                .pattern(" R ")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
         shaped(RecipeCategory.MISC, ModBlocks.RESONANT_HEARTH_ITEM.get())
                 .define('D', Blocks.POLISHED_DEEPSLATE)
                 .define('C', Items.COPPER_INGOT)
@@ -183,7 +228,7 @@ public class GeomancyRecipeProvider extends RecipeProvider {
                         new HearthIngredient(Ingredient.of(Items.AMETHYST_SHARD), 1),
                         new HearthIngredient(Ingredient.of(Items.QUARTZ), 1),
                         new HearthIngredient(Ingredient.of(Items.COPPER_INGOT), 1)),
-                        false, 500, 20, new ItemStackTemplate(ModItems.RESONANT_AMETHYST_FOCUS.get())), null);
+                        false, ResonanceCost.any(500), 20, new ItemStackTemplate(ModItems.RESONANT_AMETHYST_FOCUS.get())), null);
 
         hearth("quartz_dust", List.of(new HearthIngredient(Ingredient.of(Items.QUARTZ), 1)),
                 40, new ItemStackTemplate(ModItems.QUARTZ_DUST.get(), 2));
@@ -286,7 +331,7 @@ public class GeomancyRecipeProvider extends RecipeProvider {
     private void hearth(String name, List<HearthIngredient> ingredients, int cost, ItemStackTemplate result) {
         output.accept(ResourceKey.create(Registries.RECIPE,
                         Identifier.fromNamespaceAndPath(Geomancy.MODID, "hearth_synthesis/" + name)),
-                new HearthSynthesisRecipe(ingredients, true, cost, 20, result), null);
+                new HearthSynthesisRecipe(ingredients, true, ResonanceCost.any(cost), 20, result), null);
     }
 
     private void shattering(String name, ItemLike input, ItemLike result) {

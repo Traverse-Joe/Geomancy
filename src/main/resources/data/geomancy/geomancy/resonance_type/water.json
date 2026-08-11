@@ -1,0 +1,8 @@
+{
+  "color": 2201331,
+  "pitch": 0.9,
+  "range_multiplier": 1.0,
+  "dampening_resistance": 0.1,
+  "furnace_speed": 0.0,
+  "source_biomes": "#geomancy:water_source"
+}

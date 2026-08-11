@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "geomancy:item/geomancer_tuning_hammer"
+    "layer0": "geomancy:item/resonant_tuning_fork"
   }
 }
