@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "minecraft:chiseled_stone_bricks",
+    "C": "minecraft:copper_ingot",
+    "R": "geomancy:resonant_amethyst_shard",
+    "S": "minecraft:smooth_stone_slab"
+  },
+  "pattern": [
+    " S ",
+    " R ",
+    "CBC"
+  ],
+  "result": {
+    "id": "geomancy:resonance_pedestal"
+  }
+}

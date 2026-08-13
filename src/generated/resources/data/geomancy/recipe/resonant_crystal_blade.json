@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "geomancy:resonant_amethyst_shard",
+    "I": "minecraft:iron_ingot",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    "I I",
+    " A ",
+    " S "
+  ],
+  "result": {
+    "id": "geomancy:resonant_crystal_blade"
+  }
+}

@@ -10,6 +10,7 @@ import com.traverse.geomancy.block.BatteryCrystalBlock;
 import com.traverse.geomancy.block.PiezoAnvilBlock;
 import com.traverse.geomancy.block.ResonanceEmitterBlock;
 import com.traverse.geomancy.block.ResonanceJarBlock;
+import com.traverse.geomancy.block.ResonancePedestalBlock;
 import com.traverse.geomancy.block.ResonancePillarBlock;
 import com.traverse.geomancy.block.ResonanceReceiverBlock;
 import com.traverse.geomancy.block.ResonantBrazierBlock;
@@ -33,6 +34,8 @@ public class GeomancyJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(ResonanceStorageDataProvider.INSTANCE, ResonantHearthBlock.class);
         registration.registerBlockDataProvider(ResonanceStorageDataProvider.INSTANCE, ResonanceEmitterBlock.class);
         registration.registerBlockDataProvider(ResonanceStorageDataProvider.INSTANCE, ResonanceReceiverBlock.class);
+        registration.registerBlockDataProvider(ResonanceStorageDataProvider.INSTANCE, ResonancePedestalBlock.class);
+        registration.registerBlockDataProvider(PedestalChargeDataProvider.INSTANCE, ResonancePedestalBlock.class);
     }
 
     @Override
@@ -48,5 +51,7 @@ public class GeomancyJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(ResonanceStorageComponentProvider.INSTANCE, ResonantHearthBlock.class);
         registration.registerBlockComponent(ResonanceStorageComponentProvider.INSTANCE, ResonanceEmitterBlock.class);
         registration.registerBlockComponent(ResonanceStorageComponentProvider.INSTANCE, ResonanceReceiverBlock.class);
+        registration.registerBlockComponent(ResonanceStorageComponentProvider.INSTANCE, ResonancePedestalBlock.class);
+        registration.registerBlockComponent(PedestalChargeComponentProvider.INSTANCE, ResonancePedestalBlock.class);
     }
 }

@@ -16,6 +16,7 @@ import com.traverse.geomancy.block.GeodeJarBlock;
 import com.traverse.geomancy.block.HearthCrystalBlock;
 import com.traverse.geomancy.block.ItemPedestalBlock;
 import com.traverse.geomancy.block.PiezoAnvilBlock;
+import com.traverse.geomancy.block.ResonancePedestalBlock;
 import com.traverse.geomancy.block.ResonantHearthBlock;
 import com.traverse.geomancy.block.ResonantBrazierBlock;
 import com.traverse.geomancy.block.TectonicNodeBlock;
@@ -151,6 +152,16 @@ public final class ModBlocks {
 
     public static final DeferredItem<BlockItem> RESONANCE_RECEIVER_ITEM =
             Geomancy.ITEMS.registerSimpleBlockItem(RESONANCE_RECEIVER);
+
+    public static final DeferredBlock<ResonancePedestalBlock> RESONANCE_PEDESTAL = Geomancy.BLOCKS.registerBlock(
+            "resonance_pedestal", ResonancePedestalBlock::new, p -> p
+                    .mapColor(MapColor.STONE)
+                    .requiresCorrectToolForDrops()
+                    .strength(2.5F, 6.0F)
+                    .noOcclusion());
+
+    public static final DeferredItem<BlockItem> RESONANCE_PEDESTAL_ITEM =
+            Geomancy.ITEMS.registerSimpleBlockItem(RESONANCE_PEDESTAL);
 
     // Forces static init before Geomancy.BLOCKS.register(bus) runs.
     public static void bootstrap() {

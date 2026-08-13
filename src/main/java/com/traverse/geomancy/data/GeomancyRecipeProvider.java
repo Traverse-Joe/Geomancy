@@ -30,6 +30,7 @@ import com.traverse.geomancy.recipe.EssenceFilter;
 import com.traverse.geomancy.recipe.HearthIngredient;
 import com.traverse.geomancy.recipe.HearthSynthesisRecipe;
 import com.traverse.geomancy.recipe.LithicShatteringRecipe;
+import com.traverse.geomancy.recipe.PedestalSynthesisRecipe;
 import com.traverse.geomancy.recipe.TransmutationRecipe;
 import com.traverse.geomancy.recipe.TransmutationResult;
 import com.traverse.geomancy.recipe.TransmutationSubject;
@@ -183,6 +184,17 @@ public class GeomancyRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
                 .save(output);
 
+        shaped(RecipeCategory.MISC, ModBlocks.RESONANCE_PEDESTAL_ITEM.get())
+                .define('S', Blocks.SMOOTH_STONE_SLAB)
+                .define('R', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .define('B', Blocks.CHISELED_STONE_BRICKS)
+                .define('C', Items.COPPER_INGOT)
+                .pattern(" S ")
+                .pattern(" R ")
+                .pattern("CBC")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
         shaped(RecipeCategory.MISC, ModBlocks.RESONANT_HEARTH_ITEM.get())
                 .define('D', Blocks.POLISHED_DEEPSLATE)
                 .define('C', Items.COPPER_INGOT)
@@ -219,6 +231,25 @@ public class GeomancyRecipeProvider extends RecipeProvider {
                 .pattern(" A ")
                 .pattern("CAC")
                 .pattern(" S ")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.COMBAT, ModItems.RESONANT_CRYSTAL_BLADE.get())
+                .define('I', Items.IRON_INGOT)
+                .define('A', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .define('S', Items.STICK)
+                .pattern("I I")
+                .pattern(" A ")
+                .pattern(" S ")
+                .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
+                .save(output);
+
+        shaped(RecipeCategory.COMBAT, ModItems.VIBRANIC_RING.get())
+                .define('C', Items.COPPER_INGOT)
+                .define('A', ModItems.RESONANT_AMETHYST_SHARD.get())
+                .pattern(" C ")
+                .pattern("C C")
+                .pattern(" A ")
                 .unlockedBy("has_resonant_amethyst_shard", has(ModItems.RESONANT_AMETHYST_SHARD.get()))
                 .save(output);
 
@@ -294,6 +325,10 @@ public class GeomancyRecipeProvider extends RecipeProvider {
                         new HearthIngredient(Ingredient.of(ModItems.QUARTZ_DUST.get()), 1)),
                 400, new ItemStackTemplate(ModItems.RESONANT_CRYSTAL_SEED.get()));
 
+        // Template only - deliberately just one pedestal_synthesis recipe for now, more to
+        // follow once the block is confirmed working in-game.
+        pedestal("gravel", Ingredient.of(Blocks.COBBLESTONE), 15, 40, new ItemStackTemplate(Blocks.GRAVEL.asItem()));
+
         shattering("raw_iron", Items.RAW_IRON, ModItems.IRON_DUST.get());
         shattering("raw_copper", Items.RAW_COPPER, ModItems.COPPER_DUST.get());
         shattering("raw_gold", Items.RAW_GOLD, ModItems.GOLD_DUST.get());
@@ -332,6 +367,12 @@ public class GeomancyRecipeProvider extends RecipeProvider {
         output.accept(ResourceKey.create(Registries.RECIPE,
                         Identifier.fromNamespaceAndPath(Geomancy.MODID, "hearth_synthesis/" + name)),
                 new HearthSynthesisRecipe(ingredients, true, ResonanceCost.any(cost), 20, result), null);
+    }
+
+    private void pedestal(String name, Ingredient input, int cost, int duration, ItemStackTemplate result) {
+        output.accept(ResourceKey.create(Registries.RECIPE,
+                        Identifier.fromNamespaceAndPath(Geomancy.MODID, "pedestal_synthesis/" + name)),
+                new PedestalSynthesisRecipe(input, ResonanceCost.any(cost), duration, result), null);
     }
 
     private void shattering(String name, ItemLike input, ItemLike result) {

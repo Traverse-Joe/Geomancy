@@ -27,6 +27,17 @@ final class CuriosVessels {
                 return new ICurio.SoundInfo(SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.4F);
             }
         });
+        CuriosApi.registerCurio(ModItems.VIBRANIC_RING.get(), new ICurioItem() {
+            @Override
+            public ICurio.SoundInfo getEquipSound(SlotContext context, ItemStack stack) {
+                return new ICurio.SoundInfo(SoundEvents.AMETHYST_BLOCK_CHIME, 0.8F, 1.6F);
+            }
+        });
+    }
+
+    static boolean hasVibranicRing(Player player) {
+        ICuriosItemHandler handler = CuriosApi.getCuriosInventoryOrNull(player);
+        return handler != null && handler.isEquipped(ModItems.VIBRANIC_RING.get());
     }
 
     static List<ItemStack> vessels(Player player) {

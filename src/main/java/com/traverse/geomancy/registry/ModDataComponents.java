@@ -58,6 +58,14 @@ public final class ModDataComponents {
                     .persistent(WayfinderAnchor.CODEC)
                     .networkSynchronized(WayfinderAnchor.STREAM_CODEC));
 
+    // Toggled by shift-use on the Resonant Crystal Blade. While active, landing a normal
+    // attack also fires the directional sonic wave - Terra-Blade-style, rather than the wave
+    // being its own separate right-click action.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> BLADE_ACTIVATED =
+            DATA_COMPONENTS.registerComponentType("blade_activated", b -> b
+                    .persistent(Codec.BOOL)
+                    .networkSynchronized(ByteBufCodecs.BOOL));
+
     public static void bootstrap() {
     }
 }

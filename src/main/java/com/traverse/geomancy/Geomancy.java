@@ -19,6 +19,7 @@ import com.traverse.geomancy.registry.ModAttachments;
 import com.traverse.geomancy.registry.ModBlockEntities;
 import com.traverse.geomancy.registry.ModBlocks;
 import com.traverse.geomancy.registry.ModDataComponents;
+import com.traverse.geomancy.registry.ModEntities;
 import com.traverse.geomancy.registry.ModFeatures;
 import com.traverse.geomancy.registry.ModItems;
 import com.traverse.geomancy.registry.ModRecipes;
@@ -69,6 +70,9 @@ public class Geomancy {
                 output.accept(ModItems.LARGE_BATTERY_CRYSTAL.get());
                 output.accept(ModBlocks.RESONANCE_EMITTER_ITEM);
                 output.accept(ModBlocks.RESONANCE_RECEIVER_ITEM);
+                output.accept(ModItems.RESONANT_CRYSTAL_BLADE.get());
+                output.accept(ModItems.VIBRANIC_RING.get());
+                output.accept(ModBlocks.RESONANCE_PEDESTAL_ITEM);
             }).build());
 
     public Geomancy(IEventBus modEventBus, ModContainer modContainer) {
@@ -80,6 +84,7 @@ public class Geomancy {
         ModRecipes.bootstrap();
         ModFeatures.bootstrap();
         ModAttachments.bootstrap();
+        ModEntities.bootstrap();
 
         BLOCKS.register(modEventBus);
         ITEMS.register(modEventBus);
@@ -91,6 +96,7 @@ public class Geomancy {
         ModRecipes.RECIPE_SERIALIZERS.register(modEventBus);
         ModRecipes.RECIPE_BOOK_CATEGORIES.register(modEventBus);
         ModAttachments.ATTACHMENT_TYPES.register(modEventBus);
+        ModEntities.ENTITY_TYPES.register(modEventBus);
         modEventBus.addListener(ModRegistries::registerDataPackRegistries);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);

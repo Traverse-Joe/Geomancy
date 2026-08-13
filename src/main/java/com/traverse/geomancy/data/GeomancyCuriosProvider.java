@@ -19,6 +19,6 @@ public class GeomancyCuriosProvider extends CuriosDataProvider {
     @Override
     public void generate(HolderLookup.Provider registries) {
         createEntities(Geomancy.MODID).addPlayer().addPresetSlots(CuriosSlotTypes.Preset.RING);
-        tag(CuriosSlotTypes.Preset.RING.id()).add(ModItems.RESONANCE_VESSEL.get());
+        tag(CuriosSlotTypes.Preset.RING.id()).add(ModItems.RESONANCE_VESSEL.get(), ModItems.VIBRANIC_RING.get());
     }
 }

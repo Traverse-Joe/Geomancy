@@ -27,4 +27,8 @@ public final class CuriosCompat {
             CuriosVessels.markDirty(player, stack);
         }
     }
+
+    public static boolean hasVibranicRing(Player player) {
+        return LOADED && CuriosVessels.hasVibranicRing(player);
+    }
 }

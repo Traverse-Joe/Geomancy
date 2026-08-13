@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": "geomancy:resonant_amethyst_shard",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    " C ",
+    "C C",
+    " A "
+  ],
+  "result": {
+    "id": "geomancy:vibranic_ring"
+  }
+}

@@ -19,5 +19,6 @@ public final class GeomancyRecipeSync {
     @SubscribeEvent
     static void onDatapackSync(OnDatapackSyncEvent event) {
         event.sendRecipes(ModRecipes.HEARTH_SYNTHESIS_TYPE.get());
+        event.sendRecipes(ModRecipes.PEDESTAL_SYNTHESIS_TYPE.get());
     }
 }

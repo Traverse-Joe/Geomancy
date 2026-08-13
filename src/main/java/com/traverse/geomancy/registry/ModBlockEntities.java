@@ -13,6 +13,7 @@ import com.traverse.geomancy.block.entity.ResonancePillarBlockEntity;
 import com.traverse.geomancy.block.entity.GeodeJarBlockEntity;
 import com.traverse.geomancy.block.entity.ItemPedestalBlockEntity;
 import com.traverse.geomancy.block.entity.PiezoAnvilBlockEntity;
+import com.traverse.geomancy.block.entity.ResonancePedestalBlockEntity;
 import com.traverse.geomancy.block.entity.ResonanceReceiverBlockEntity;
 import com.traverse.geomancy.block.entity.ResonantHearthBlockEntity;
 import com.traverse.geomancy.block.entity.ResonantBrazierBlockEntity;
@@ -69,6 +70,10 @@ public final class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonanceReceiverBlockEntity>> RESONANCE_RECEIVER =
             BLOCK_ENTITIES.register("resonance_receiver", () -> new BlockEntityType<>(
                     ResonanceReceiverBlockEntity::new, ModBlocks.RESONANCE_RECEIVER.get()));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonancePedestalBlockEntity>> RESONANCE_PEDESTAL =
+            BLOCK_ENTITIES.register("resonance_pedestal", () -> new BlockEntityType<>(
+                    ResonancePedestalBlockEntity::new, ModBlocks.RESONANCE_PEDESTAL.get()));
 
     public static void bootstrap() {
     }

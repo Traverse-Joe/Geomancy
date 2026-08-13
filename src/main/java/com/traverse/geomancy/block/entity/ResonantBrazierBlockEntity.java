@@ -5,6 +5,8 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -13,6 +15,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -24,6 +27,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStackResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 import com.traverse.geomancy.block.ResonantBrazierBlock;
 import com.traverse.geomancy.registry.ModBlockEntities;
@@ -32,8 +36,16 @@ import com.traverse.geomancy.resonance.ResonanceStorage;
 public class ResonantBrazierBlockEntity extends BlockEntity implements ResonanceStorage {
     private static final int RESONANCE_PER_PULSE = 5;
     private static final int PULSE_INTERVAL = 20;
-    private static final int BREAK_CHECK_INTERVAL = 100;
+    // A shard burns for ten seconds at the outside. The wear check has to fit inside that: at
+    // 5 resonance a second the whole life is only 50 resonance, so checking per 100 would mean
+    // no shard ever broke early.
+    private static final int MAX_BURN_TICKS = 200;
+    private static final int BREAK_CHECK_INTERVAL = 10;
     private static final float BREAK_CHANCE = 0.1F;
+
+    // Enforced from the moment the slot empties, so there is a real gap between shards rather
+    // than one that a full-length burn has already paid off.
+    private static final int INSERT_DELAY_TICKS = 40;
 
     // A small catch buffer, not a battery: it exists so an emitter can be mounted directly
     // on the Brazier and draw off whatever adjacent storage couldn't absorb, rather than
@@ -42,6 +54,8 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
 
     private ItemStack crystal = ItemStack.EMPTY;
     private int resonanceSinceBreakCheck;
+    private int burnTicks;
+    private long nextInsertTick;
     private int buffer;
     private final CrystalSlot itemHandler = new CrystalSlot();
 
@@ -56,11 +70,11 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
     }
 
     public boolean insert(ItemStack held) {
-        if (!held.is(Items.AMETHYST_SHARD) || !crystal.isEmpty()) {
+        if (!held.is(Items.AMETHYST_SHARD) || !crystal.isEmpty() || !acceptsCrystal()) {
             return false;
         }
         crystal = held.split(1);
-        sync();
+        syncCrystal();
         return true;
     }
 
@@ -69,10 +83,27 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
             return ItemStack.EMPTY;
         }
         ItemStack removed = crystal;
-        crystal = ItemStack.EMPTY;
+        clearCrystal();
         extinguish();
-        sync();
+        syncCrystal();
         return removed;
+    }
+
+    // Destroys the shard instead of yielding it, for every way a burning Brazier can lose one:
+    // taken by hand, broken with the block, or lost to the wear check.
+    public boolean shatterCrystal(ServerLevel level) {
+        if (crystal.isEmpty()) {
+            return false;
+        }
+        Item shattered = crystal.getItem();
+        clearCrystal();
+        extinguish();
+        syncCrystal();
+        level.sendParticles(new ItemParticleOption(ParticleTypes.ITEM, shattered),
+                worldPosition.getX() + 0.5, worldPosition.getY() + 0.7, worldPosition.getZ() + 0.5,
+                12, 0.15, 0.15, 0.15, 0.05);
+        level.playSound(null, worldPosition, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1.0F, 1.25F);
+        return true;
     }
 
     public boolean ignite() {
@@ -90,14 +121,45 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
         return crystal;
     }
 
-    public void dropContents(ServerLevel level) {
-        if (!crystal.isEmpty()) {
+    private void clearCrystal() {
+        crystal = ItemStack.EMPTY;
+        onCrystalEmptied();
+    }
+
+    // Both counters belong to the shard that just left, so they never carry into the next one,
+    // and the slot closes for a moment before it will take another.
+    private void onCrystalEmptied() {
+        resonanceSinceBreakCheck = 0;
+        burnTicks = 0;
+        if (level != null) {
+            nextInsertTick = level.getGameTime() + INSERT_DELAY_TICKS;
+        }
+    }
+
+    // Compared as an absolute deadline, with a sanity bound so a stored tick left ahead of the
+    // world clock - a rolled-back save - cannot close the slot permanently.
+    private boolean acceptsCrystal() {
+        if (level == null) {
+            return true;
+        }
+        long now = level.getGameTime();
+        return now >= nextInsertTick || nextInsertTick - now > INSERT_DELAY_TICKS;
+    }
+
+    // A lit Brazier shatters its shard whoever breaks it - only the unlit drop is game-mode
+    // dependent, so a creative break still gets the break sound rather than silently voiding it.
+    public void dropContents(ServerLevel level, boolean dropItems) {
+        if (isLit()) {
+            shatterCrystal(level);
+            return;
+        }
+        if (dropItems && !crystal.isEmpty()) {
             level.addFreshEntity(new ItemEntity(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.7,
                     worldPosition.getZ() + 0.5, crystal.copy()));
         }
-        crystal = ItemStack.EMPTY;
+        clearCrystal();
         extinguish();
-        sync();
+        syncCrystal();
     }
 
     public static void serverTick(Level level, BlockPos pos, BlockState state, ResonantBrazierBlockEntity brazier) {
@@ -114,12 +176,18 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
             brazier.resonanceSinceBreakCheck += generated;
             while (brazier.resonanceSinceBreakCheck >= BREAK_CHECK_INTERVAL) {
                 brazier.resonanceSinceBreakCheck -= BREAK_CHECK_INTERVAL;
-                if (level.getRandom().nextFloat() < BREAK_CHANCE) {
-                    brazier.crystal = ItemStack.EMPTY;
-                    brazier.extinguish();
-                    level.playSound(null, pos, SoundEvents.AMETHYST_BLOCK_BREAK, SoundSource.BLOCKS, 1.0F, 1.25F);
+                if (level.getRandom().nextFloat() < BREAK_CHANCE && level instanceof ServerLevel serverLevel) {
+                    brazier.shatterCrystal(serverLevel);
                     return;
                 }
+            }
+            // The hard ceiling; the wear check above is the chance of losing it sooner. Aged per
+            // pulse rather than per tick because a full destination pauses delivery without
+            // preserving the shard, so the two must not drift apart.
+            brazier.burnTicks += PULSE_INTERVAL;
+            if (brazier.burnTicks >= MAX_BURN_TICKS && level instanceof ServerLevel serverLevel) {
+                brazier.shatterCrystal(serverLevel);
+                return;
             }
             brazier.setChanged();
         }
@@ -197,11 +265,23 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
         }
     }
 
+    // Comparator output reads the crystal slot, so anything touching it has to poke neighbours as
+    // well - a plain block update misses comparators reading through a solid block. Neither the
+    // resonance buffer nor LIT routes here: both change without moving the signal.
+    private void syncCrystal() {
+        sync();
+        if (level != null) {
+            level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+        }
+    }
+
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.store("crystal", ItemStack.OPTIONAL_CODEC, crystal);
         output.putInt("resonance_since_break_check", resonanceSinceBreakCheck);
+        output.putInt("burn_ticks", burnTicks);
+        output.putLong("next_insert_tick", nextInsertTick);
         output.putInt("buffer", buffer);
     }
 
@@ -210,6 +290,8 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
         super.loadAdditional(input);
         crystal = input.read("crystal", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
         resonanceSinceBreakCheck = input.getIntOr("resonance_since_break_check", 0);
+        burnTicks = Math.max(input.getIntOr("burn_ticks", 0), 0);
+        nextInsertTick = input.getLongOr("next_insert_tick", 0L);
         buffer = Math.min(input.getIntOr("buffer", 0), BUFFER_CAPACITY);
     }
 
@@ -242,6 +324,19 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
             return resource.is(Items.AMETHYST_SHARD);
         }
 
+        // A burning shard cannot be pulled back out. Refused rather than shattered: a hopper
+        // retrying every tick would otherwise quietly void a whole chest of shards.
+        @Override
+        public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            return isLit() ? 0 : super.extract(index, resource, amount, transaction);
+        }
+
+        // The refill delay has to bind here too, or a hopper simply outruns it.
+        @Override
+        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            return acceptsCrystal() ? super.insert(index, resource, amount, transaction) : 0;
+        }
+
         @Override
         protected int getCapacity(ItemResource resource) {
             return 1;
@@ -249,7 +344,12 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
 
         @Override
         protected void onRootCommit(ItemStack originalState) {
-            sync();
+            // A hopper emptying the slot has to reset the burn timer too, or the next shard would
+            // inherit however much of its predecessor's life was already spent.
+            if (crystal.isEmpty()) {
+                onCrystalEmptied();
+            }
+            syncCrystal();
         }
     }
 }

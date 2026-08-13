@@ -35,7 +35,7 @@ public class GeomancyBlockLoot extends BlockLootSubProvider {
                 ModBlocks.RESONANT_BRAZIER.get(), ModBlocks.HEARTH_CRYSTAL.get(),
                 ModBlocks.SMALL_BATTERY_CRYSTAL.get(), ModBlocks.MEDIUM_BATTERY_CRYSTAL.get(),
                 ModBlocks.LARGE_BATTERY_CRYSTAL.get(), ModBlocks.RESONANCE_EMITTER.get(),
-                ModBlocks.RESONANCE_RECEIVER.get());
+                ModBlocks.RESONANCE_RECEIVER.get(), ModBlocks.RESONANCE_PEDESTAL.get());
     }
 
     @Override
@@ -48,6 +48,7 @@ public class GeomancyBlockLoot extends BlockLootSubProvider {
         dropSelf(ModBlocks.HEARTH_CRYSTAL.get());
         dropSelf(ModBlocks.RESONANCE_EMITTER.get());
         dropSelf(ModBlocks.RESONANCE_RECEIVER.get());
+        dropSelf(ModBlocks.RESONANCE_PEDESTAL.get());
 
         Block jar = ModBlocks.RESONANCE_JAR.get();
         add(jar, LootTable.lootTable().withPool(applyExplosionCondition(jar,

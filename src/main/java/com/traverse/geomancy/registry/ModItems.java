@@ -14,7 +14,9 @@ import com.traverse.geomancy.item.GeodeJarItem;
 import com.traverse.geomancy.item.IronTuningForkItem;
 import com.traverse.geomancy.item.LithicPickaxeItem;
 import com.traverse.geomancy.item.ResonanceVesselItem;
+import com.traverse.geomancy.item.ResonantCrystalBladeItem;
 import com.traverse.geomancy.item.ResonantWayfinderItem;
+import com.traverse.geomancy.item.VibranicRingItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ToolMaterial;
 
@@ -82,6 +84,14 @@ public final class ModItems {
 
     public static final DeferredItem<ResonantWayfinderItem> RESONANT_WAYFINDER = Geomancy.ITEMS.registerItem(
             "resonant_wayfinder", ResonantWayfinderItem::new, p -> p.stacksTo(1));
+
+    public static final DeferredItem<ResonantCrystalBladeItem> RESONANT_CRYSTAL_BLADE = Geomancy.ITEMS.registerItem(
+            "resonant_crystal_blade", ResonantCrystalBladeItem::new, p -> p
+                    .stacksTo(1)
+                    .sword(ToolMaterial.IRON, 5.0F, -2.4F));
+
+    public static final DeferredItem<VibranicRingItem> VIBRANIC_RING = Geomancy.ITEMS.registerItem(
+            "vibranic_ring", VibranicRingItem::new, p -> p.stacksTo(1));
 
     public static void bootstrap() {
     }

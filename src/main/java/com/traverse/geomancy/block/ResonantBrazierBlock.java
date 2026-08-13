@@ -3,6 +3,7 @@ package com.traverse.geomancy.block;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -13,6 +14,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -29,6 +31,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 
 import com.traverse.geomancy.block.entity.ResonantBrazierBlockEntity;
 import com.traverse.geomancy.registry.ModBlockEntities;
@@ -59,13 +64,17 @@ public class ResonantBrazierBlock extends Block implements EntityBlock {
             return InteractionResult.PASS;
         }
         if (stack.is(Items.FLINT_AND_STEEL)) {
-            if (!level.isClientSide() && !brazier.ignite()) {
+            if (level.isClientSide()) {
+                return InteractionResult.SUCCESS;
+            }
+            if (!brazier.ignite()) {
                 return InteractionResult.FAIL;
             }
-            if (!level.isClientSide()) {
-                stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
-            }
-            return InteractionResult.SUCCESS;
+            // Automation lights the Brazier through a fake player holding Flint and Steel, so
+            // this path touches only the held stack and the block entity - never the player's
+            // inventory, position, or client connection.
+            stack.hurtAndBreak(1, player, hand.asEquipmentSlot());
+            return InteractionResult.SUCCESS_SERVER;
         }
         if (!level.isClientSide() && !brazier.insert(stack)) {
             return InteractionResult.FAIL;
@@ -79,25 +88,61 @@ public class ResonantBrazierBlock extends Block implements EntityBlock {
         if (!(level.getBlockEntity(pos) instanceof ResonantBrazierBlockEntity brazier)) {
             return InteractionResult.PASS;
         }
-        if (!level.isClientSide()) {
-            ItemStack removed = brazier.removeIngredient();
-            if (removed.isEmpty()) {
-                return InteractionResult.PASS;
-            }
-            if (!player.getInventory().add(removed)) {
-                player.drop(removed, false);
-            }
+        if (level.isClientSide()) {
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResult.SUCCESS;
+        // Reaching into a burning Brazier destroys the shard rather than returning it.
+        if (state.getValue(LIT) && level instanceof ServerLevel serverLevel) {
+            return brazier.shatterCrystal(serverLevel) ? InteractionResult.SUCCESS_SERVER : InteractionResult.PASS;
+        }
+        ItemStack removed = brazier.removeIngredient();
+        if (removed.isEmpty()) {
+            return InteractionResult.PASS;
+        }
+        if (!player.getInventory().add(removed)) {
+            player.drop(removed, false);
+        }
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide() && level instanceof ServerLevel serverLevel && !player.isCreative()
+        if (level instanceof ServerLevel serverLevel
                 && level.getBlockEntity(pos) instanceof ResonantBrazierBlockEntity brazier) {
-            brazier.dropContents(serverLevel);
+            brazier.dropContents(serverLevel, !player.isCreative());
         }
         return super.playerWillDestroy(level, pos, state, player);
+    }
+
+    // The route a Dispenser's Flint and Steel takes, the same one that lights campfires and
+    // candles. It sets the returned state directly rather than going through the block entity,
+    // so the shard has to be checked here or a Dispenser could light an empty Brazier.
+    @Override
+    public @Nullable BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility ability,
+            boolean simulate) {
+        if (ability == ItemAbilities.FIRESTARTER_LIGHT && !state.getValue(LIT)
+                && context.getLevel().getBlockEntity(context.getClickedPos())
+                        instanceof ResonantBrazierBlockEntity brazier
+                && !brazier.crystal().isEmpty()) {
+            if (!simulate) {
+                context.getLevel().playSound(null, context.getClickedPos(), SoundEvents.FLINTANDSTEEL_USE,
+                        SoundSource.BLOCKS, 1.0F, 1.1F);
+            }
+            return state.setValue(LIT, true);
+        }
+        return super.getToolModifiedState(state, context, ability, simulate);
+    }
+
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    // Whether a shard is loaded, nothing more - burning or not reads the same.
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
+        return level.getBlockEntity(pos) instanceof ResonantBrazierBlockEntity brazier
+                && !brazier.crystal().isEmpty() ? 1 : 0;
     }
 
     @Override

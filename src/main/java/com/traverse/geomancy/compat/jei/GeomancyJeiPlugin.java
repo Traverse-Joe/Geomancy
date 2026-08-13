@@ -14,6 +14,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 
 import com.traverse.geomancy.Geomancy;
 import com.traverse.geomancy.recipe.HearthSynthesisRecipe;
+import com.traverse.geomancy.recipe.PedestalSynthesisRecipe;
 import com.traverse.geomancy.registry.ModBlocks;
 import com.traverse.geomancy.registry.ModRecipes;
 
@@ -27,6 +28,7 @@ public class GeomancyJeiPlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new HearthSynthesisCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new PedestalSynthesisCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -34,10 +36,15 @@ public class GeomancyJeiPlugin implements IModPlugin {
         List<RecipeHolder<HearthSynthesisRecipe>> recipes = new ArrayList<>(
                 GeomancyClientRecipeSync.syncedRecipes().byType(ModRecipes.HEARTH_SYNTHESIS_TYPE.get()));
         registration.addRecipes(HearthSynthesisCategory.RECIPE_TYPE, recipes);
+
+        List<RecipeHolder<PedestalSynthesisRecipe>> pedestalRecipes = new ArrayList<>(
+                GeomancyClientRecipeSync.syncedRecipes().byType(ModRecipes.PEDESTAL_SYNTHESIS_TYPE.get()));
+        registration.addRecipes(PedestalSynthesisCategory.RECIPE_TYPE, pedestalRecipes);
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
         registration.addCraftingStation(HearthSynthesisCategory.RECIPE_TYPE, ModBlocks.RESONANT_HEARTH_ITEM.get());
+        registration.addCraftingStation(PedestalSynthesisCategory.RECIPE_TYPE, ModBlocks.RESONANCE_PEDESTAL_ITEM.get());
     }
 }

@@ -5,8 +5,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 
+import net.minecraft.client.renderer.entity.NoopRenderer;
+
 import com.traverse.geomancy.Geomancy;
 import com.traverse.geomancy.registry.ModBlockEntities;
+import com.traverse.geomancy.registry.ModEntities;
 
 @EventBusSubscriber(modid = Geomancy.MODID, value = Dist.CLIENT)
 public final class GeomancyClientRenderers {
@@ -23,5 +26,8 @@ public final class GeomancyClientRenderers {
         event.registerBlockEntityRenderer(ModBlockEntities.RESONANT_BRAZIER.get(), ResonantBrazierRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.GEODE_JAR.get(), ResonanceFillRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_EMITTER.get(), ResonanceEmitterRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_PEDESTAL.get(), ResonancePedestalRenderer::new);
+        // No model by design - the wave is drawn entirely by its own particle trail.
+        event.registerEntityRenderer(ModEntities.RESONANT_WAVE.get(), NoopRenderer::new);
     }
 }

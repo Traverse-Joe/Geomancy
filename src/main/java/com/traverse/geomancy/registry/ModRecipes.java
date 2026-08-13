@@ -12,6 +12,7 @@ import com.traverse.geomancy.Geomancy;
 import com.traverse.geomancy.recipe.TransmutationRecipe;
 import com.traverse.geomancy.recipe.HearthSynthesisRecipe;
 import com.traverse.geomancy.recipe.LithicShatteringRecipe;
+import com.traverse.geomancy.recipe.PedestalSynthesisRecipe;
 
 public final class ModRecipes {
     private ModRecipes() {
@@ -51,6 +52,14 @@ public final class ModRecipes {
                     () -> new RecipeSerializer<>(LithicShatteringRecipe.MAP_CODEC, LithicShatteringRecipe.STREAM_CODEC));
     public static final DeferredHolder<RecipeBookCategory, RecipeBookCategory> LITHIC_SHATTERING_CATEGORY =
             RECIPE_BOOK_CATEGORIES.register("lithic_shattering", RecipeBookCategory::new);
+
+    public static final DeferredHolder<RecipeType<?>, RecipeType<PedestalSynthesisRecipe>> PEDESTAL_SYNTHESIS_TYPE =
+            RECIPE_TYPES.register("pedestal_synthesis", RecipeType::simple);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<PedestalSynthesisRecipe>> PEDESTAL_SYNTHESIS_SERIALIZER =
+            RECIPE_SERIALIZERS.register("pedestal_synthesis",
+                    () -> new RecipeSerializer<>(PedestalSynthesisRecipe.MAP_CODEC, PedestalSynthesisRecipe.STREAM_CODEC));
+    public static final DeferredHolder<RecipeBookCategory, RecipeBookCategory> PEDESTAL_SYNTHESIS_CATEGORY =
+            RECIPE_BOOK_CATEGORIES.register("pedestal_synthesis", RecipeBookCategory::new);
 
     public static void bootstrap() {
     }

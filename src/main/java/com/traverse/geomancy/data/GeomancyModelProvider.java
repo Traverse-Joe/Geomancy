@@ -182,6 +182,13 @@ public class GeomancyModelProvider extends ModelProvider {
                 BlockModelGenerators.plainVariant(receiverModel)).with(BlockModelGenerators.ROTATION_FACING));
         blockModels.registerSimpleItemModel(receiver, receiverModel);
 
+        Block resonancePedestal = ModBlocks.RESONANCE_PEDESTAL.get();
+        Identifier resonancePedestalModel = PEDESTAL_CORE.create(resonancePedestal,
+                textureOf("block/resonance_pillar"), blockModels.modelOutput);
+        blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(resonancePedestal,
+                BlockModelGenerators.plainVariant(resonancePedestalModel)));
+        blockModels.registerSimpleItemModel(resonancePedestal, resonancePedestalModel);
+
         itemModels.generateFlatItem(ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.RESONANT_AMETHYST_FOCUS.get(), ModItems.RESONANT_AMETHYST_SHARD.get(),
                 ModelTemplates.FLAT_ITEM);
@@ -203,6 +210,8 @@ public class GeomancyModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.RESONANCE_VESSEL.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.LITHIC_PICKAXE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModels.generateFlatItem(ModItems.RESONANT_WAYFINDER.get(), ModItems.GEOMANCER_BELL.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        itemModels.generateFlatItem(ModItems.RESONANT_CRYSTAL_BLADE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        itemModels.generateFlatItem(ModItems.VIBRANIC_RING.get(), ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
     }
 
     private static TextureMapping textureOf(String path) {
@@ -226,7 +235,8 @@ public class GeomancyModelProvider extends ModelProvider {
                 BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.MEDIUM_BATTERY_CRYSTAL.get()),
                 BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.LARGE_BATTERY_CRYSTAL.get()),
                 BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANCE_EMITTER.get()),
-                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANCE_RECEIVER.get()));
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANCE_RECEIVER.get()),
+                BuiltInRegistries.BLOCK.wrapAsHolder(ModBlocks.RESONANCE_PEDESTAL.get()));
     }
 
     @Override
@@ -259,10 +269,13 @@ public class GeomancyModelProvider extends ModelProvider {
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.LITHIC_PICKAXE.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.HEARTH_CRYSTAL_ITEM.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_WAYFINDER.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.RESONANT_CRYSTAL_BLADE.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModItems.VIBRANIC_RING.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.SMALL_BATTERY_CRYSTAL.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.MEDIUM_BATTERY_CRYSTAL.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModItems.LARGE_BATTERY_CRYSTAL.get()),
                 BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.RESONANCE_EMITTER_ITEM.get()),
-                BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.RESONANCE_RECEIVER_ITEM.get()));
+                BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.RESONANCE_RECEIVER_ITEM.get()),
+                BuiltInRegistries.ITEM.wrapAsHolder(ModBlocks.RESONANCE_PEDESTAL_ITEM.get()));
     }
 }

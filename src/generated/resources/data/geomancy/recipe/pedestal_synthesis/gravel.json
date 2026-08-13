@@ -1,0 +1,10 @@
+{
+  "type": "geomancy:pedestal_synthesis",
+  "input": "minecraft:cobblestone",
+  "resonance_cost": {
+    "amount": 15
+  },
+  "result": {
+    "id": "minecraft:gravel"
+  }
+}
