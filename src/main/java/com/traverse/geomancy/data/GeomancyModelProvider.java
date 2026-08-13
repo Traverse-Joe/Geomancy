@@ -1,5 +1,6 @@
 package com.traverse.geomancy.data;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -7,10 +8,12 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.renderer.item.properties.select.ComponentContents;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -24,6 +27,7 @@ import com.traverse.geomancy.block.ResonancePillarBlock;
 import com.traverse.geomancy.block.ResonantBrazierBlock;
 import com.traverse.geomancy.block.TectonicNodeBlock;
 import com.traverse.geomancy.registry.ModBlocks;
+import com.traverse.geomancy.registry.ModDataComponents;
 import com.traverse.geomancy.registry.ModItems;
 
 public class GeomancyModelProvider extends ModelProvider {
@@ -210,8 +214,25 @@ public class GeomancyModelProvider extends ModelProvider {
         itemModels.generateFlatItem(ModItems.RESONANCE_VESSEL.get(), ModelTemplates.FLAT_ITEM);
         itemModels.generateFlatItem(ModItems.LITHIC_PICKAXE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
         itemModels.generateFlatItem(ModItems.RESONANT_WAYFINDER.get(), ModItems.GEOMANCER_BELL.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
-        itemModels.generateFlatItem(ModItems.RESONANT_CRYSTAL_BLADE.get(), ModelTemplates.FLAT_HANDHELD_ITEM);
+        generateResonantCrystalBlade(itemModels);
         itemModels.generateFlatItem(ModItems.VIBRANIC_RING.get(), ModItems.RESONANT_AMETHYST_SHARD.get(), ModelTemplates.FLAT_ITEM);
+    }
+
+    // Two flat models picked by the same component shift-use toggles, so resonance mode shows in
+    // the hand and in the inventory without a renderer. An absent component reads as inactive,
+    // which is what an uncrafted blade has.
+    private static void generateResonantCrystalBlade(ItemModelGenerators itemModels) {
+        Item blade = ModItems.RESONANT_CRYSTAL_BLADE.get();
+        Identifier chargedTexture = Identifier.fromNamespaceAndPath(Geomancy.MODID,
+                "item/resonant_crystal_blade_charged");
+        Identifier idleModel = ModelTemplates.FLAT_HANDHELD_ITEM.create(blade,
+                TextureMapping.layer0(blade), itemModels.modelOutput);
+        Identifier chargedModel = ModelTemplates.FLAT_HANDHELD_ITEM.create(chargedTexture,
+                TextureMapping.layer0(new Material(chargedTexture, false)), itemModels.modelOutput);
+        itemModels.itemModelOutput.accept(blade, ItemModelUtils.select(
+                new ComponentContents<>(ModDataComponents.BLADE_ACTIVATED.get()),
+                ItemModelUtils.plainModel(idleModel),
+                List.of(ItemModelUtils.when(Boolean.TRUE, ItemModelUtils.plainModel(chargedModel)))));
     }
 
     private static TextureMapping textureOf(String path) {
