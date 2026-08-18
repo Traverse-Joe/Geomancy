@@ -267,7 +267,7 @@ public class ResonancePillarBlockEntity extends EssenceWorkerBlockEntity impleme
     }
 
     private void runLogistics(Level level) {
-        if (charge.isEmpty() || charge.essence() != Essence.MOTUS || charge.amount() < Config.LOGISTICS_COST.get()
+        if (charge.isEmpty() || charge.essence() != Essence.AERY || charge.amount() < Config.LOGISTICS_COST.get()
                 || logisticsPickup == null || !level.hasChunkAt(logisticsPickup)
                 || !(logisticsWorldPickup ? LineOfSight.clearToTop(level, worldPosition, logisticsPickup)
                         : LineOfSight.clear(level, worldPosition, logisticsPickup))) {

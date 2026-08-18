@@ -9,16 +9,20 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 import com.traverse.geomancy.block.entity.EssenceWorkerBlockEntity;
+import com.traverse.geomancy.block.entity.ResonanceJarBlockEntity;
 import com.traverse.geomancy.block.entity.ResonancePillarBlockEntity;
+import com.traverse.geomancy.block.entity.TectonicNodeBlockEntity;
 import com.traverse.geomancy.Config;
 import com.traverse.geomancy.essence.EssenceCharge;
 import com.traverse.geomancy.essence.Essence;
+import com.traverse.geomancy.network.EssenceProvider;
 import com.traverse.geomancy.network.EssenceRelay;
 
 // Shared by every relay type - the Resonance Pillar and the Resonance Jar: draws the
@@ -72,8 +76,7 @@ public class EssenceLinkRenderer<T extends BlockEntity & EssenceRelay>
         BlockPos origin = relay.getBlockPos();
         state.cameraOffset = cameraPosition.subtract(Vec3.atLowerCornerOf(origin));
 
-        EssenceCharge charge = relay.charge();
-        state.linkColor = charge.isEmpty() ? NEUTRAL_COLOR : ARGB.opaque(charge.essence().color());
+        state.linkColor = linkColor(relay);
         state.linkValid = relay.linkValid();
         state.linkTime = relay.getLevel() == null ? 0.0F : relay.getLevel().getGameTime() + partialTicks;
 
@@ -107,6 +110,37 @@ public class EssenceLinkRenderer<T extends BlockEntity & EssenceRelay>
         }
     }
 
+    // A relay's own charge stays empty for the whole span between linking and the first
+    // refined unit landing, so fall back through the raw intake to the source itself.
+    // Without that a jar draws a grey beam for the first minute of its life and reads as
+    // unlinked exactly when the player is looking for confirmation that it linked.
+    private static <T extends BlockEntity & EssenceRelay> int linkColor(T relay) {
+        EssenceCharge charge = relay.charge();
+        if (!charge.isEmpty()) {
+            return ARGB.opaque(charge.essence().color());
+        }
+        if (relay instanceof ResonanceJarBlockEntity jar && !jar.intake().isEmpty()) {
+            return ARGB.opaque(jar.intake().essence().color());
+        }
+        Essence source = sourceEssence(relay);
+        return source == null ? NEUTRAL_COLOR : ARGB.opaque(source.color());
+    }
+
+    private static <T extends BlockEntity & EssenceRelay> @Nullable Essence sourceEssence(T relay) {
+        Level level = relay.getLevel();
+        BlockPos upstream = relay.upstream();
+        if (level == null || upstream == null) {
+            return null;
+        }
+        // A drained node still knows its type; a plain provider only does while it holds
+        // charge. An unloaded upstream yields no block entity and falls through to null.
+        return switch (level.getBlockEntity(upstream)) {
+            case TectonicNodeBlockEntity node -> node.essence();
+            case EssenceProvider provider when !provider.charge().isEmpty() -> provider.charge().essence();
+            case null, default -> null;
+        };
+    }
+
     private static Vec3 offsetFrom(BlockPos origin, BlockPos target) {
         return new Vec3(target.getX() - origin.getX(), target.getY() - origin.getY(), target.getZ() - origin.getZ());
     }
@@ -126,17 +160,17 @@ public class EssenceLinkRenderer<T extends BlockEntity & EssenceRelay>
         }
         Vec3 pickup = state.logisticsPickupOffset;
         if (pickup != null) {
-            LinkBeamRenderer.submit(poseStack, collector, pickup, state.cameraOffset, Essence.MOTUS.color(),
+            LinkBeamRenderer.submit(poseStack, collector, pickup, state.cameraOffset, Essence.AERY.color(),
                     state.linkTime, 0.0F);
             if (state.logisticsWorldPickup) {
                 WorldPickupCircleRenderer.submit(poseStack, collector,
-                        pickup.add(0.5D, 1.005D, 0.5D), state.logisticsPickupRadius, Essence.MOTUS.color());
+                        pickup.add(0.5D, 1.005D, 0.5D), state.logisticsPickupRadius, Essence.AERY.color());
             }
             for (Vec3 output : state.logisticsOutputOffsets) {
                 poseStack.pushPose();
                 poseStack.translate(pickup.x, pickup.y, pickup.z);
                 LinkBeamRenderer.submit(poseStack, collector, output.subtract(pickup),
-                        state.cameraOffset.subtract(pickup), Essence.MOTUS.color(), state.linkTime, 0.0F);
+                        state.cameraOffset.subtract(pickup), Essence.AERY.color(), state.linkTime, 0.0F);
                 poseStack.popPose();
             }
         }

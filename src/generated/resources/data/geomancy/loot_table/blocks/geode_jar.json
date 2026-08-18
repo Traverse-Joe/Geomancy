@@ -15,7 +15,8 @@
             {
               "function": "minecraft:copy_components",
               "include": [
-                "geomancy:stored_resonance"
+                "geomancy:stored_resonance",
+                "geomancy:stored_resonance_type"
               ],
               "source": "block_entity"
             }

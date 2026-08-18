@@ -42,6 +42,9 @@ public class GeomancyModelProvider extends ModelProvider {
     private static final ModelTemplate PEDESTAL_CORE = new ModelTemplate(
             Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/item_pedestal_core")),
             Optional.empty(), TextureSlot.ALL);
+    private static final ModelTemplate RESONANCE_PEDESTAL_CORE = new ModelTemplate(
+            Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/resonance_pedestal_core")),
+            Optional.empty(), TextureSlot.ALL);
     private static final ModelTemplate GEODE_JAR_CORE = new ModelTemplate(
             Optional.of(Identifier.fromNamespaceAndPath(Geomancy.MODID, "block/geode_jar_core")),
             Optional.empty(), TextureSlot.ALL);
@@ -187,7 +190,7 @@ public class GeomancyModelProvider extends ModelProvider {
         blockModels.registerSimpleItemModel(receiver, receiverModel);
 
         Block resonancePedestal = ModBlocks.RESONANCE_PEDESTAL.get();
-        Identifier resonancePedestalModel = PEDESTAL_CORE.create(resonancePedestal,
+        Identifier resonancePedestalModel = RESONANCE_PEDESTAL_CORE.create(resonancePedestal,
                 textureOf("block/resonance_pillar"), blockModels.modelOutput);
         blockModels.blockStateOutput.accept(MultiVariantGenerator.dispatch(resonancePedestal,
                 BlockModelGenerators.plainVariant(resonancePedestalModel)));

@@ -3,6 +3,7 @@ package com.traverse.geomancy.block.entity;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -22,9 +23,11 @@ import com.traverse.geomancy.registry.ModBlockEntities;
 import com.traverse.geomancy.registry.ModDataComponents;
 import com.traverse.geomancy.resonance.BatterySize;
 import com.traverse.geomancy.resonance.ResonanceStorage;
+import com.traverse.geomancy.resonance.ResonanceType;
+import com.traverse.geomancy.resonance.TypedResonancePool;
 
 public class BatteryCrystalBlockEntity extends BlockEntity implements ResonanceStorage {
-    private int resonance;
+    private final TypedResonancePool pool = new TypedResonancePool();
 
     public BatteryCrystalBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.BATTERY_CRYSTAL.get(), pos, state);
@@ -36,7 +39,17 @@ public class BatteryCrystalBlockEntity extends BlockEntity implements ResonanceS
 
     @Override
     public int resonance() {
-        return resonance;
+        return pool.amount();
+    }
+
+    @Override
+    public @Nullable ResourceKey<ResonanceType> resonanceType() {
+        return pool.type();
+    }
+
+    @Override
+    public int resonanceColor() {
+        return pool.color(getLevel());
     }
 
     @Override
@@ -55,10 +68,9 @@ public class BatteryCrystalBlockEntity extends BlockEntity implements ResonanceS
     }
 
     @Override
-    public int insertResonance(int amount, boolean simulate) {
-        int accepted = Math.min(Math.max(amount, 0), capacity() - resonance);
+    public int insertResonance(@Nullable ResourceKey<ResonanceType> type, int amount, boolean simulate) {
+        int accepted = pool.insert(type, amount, capacity(), simulate);
         if (!simulate && accepted > 0) {
-            resonance += accepted;
             sync();
             updateFillLevel();
         }
@@ -67,9 +79,8 @@ public class BatteryCrystalBlockEntity extends BlockEntity implements ResonanceS
 
     @Override
     public int extractResonance(int amount, boolean simulate) {
-        int extracted = Math.min(Math.max(amount, 0), resonance);
+        int extracted = pool.extract(amount, simulate);
         if (!simulate && extracted > 0) {
-            resonance -= extracted;
             sync();
             updateFillLevel();
         }
@@ -87,6 +98,10 @@ public class BatteryCrystalBlockEntity extends BlockEntity implements ResonanceS
     // fills, rather than only reporting its charge through a tooltip. Quantized to 5 steps
     // so this only touches the blockstate (and triggers a relight) when the visible
     // brightness changes, not on every insert/extract.
+    //
+    // This is also what keeps BatteryCrystalTint correct without a re-mesh of its own: a
+    // pool only takes a type on an insert into an empty pool, and only loses one on
+    // draining to empty, so the type can never change without the bucket changing too.
     private void updateFillLevel() {
         if (level == null) {
             return;
@@ -100,42 +115,46 @@ public class BatteryCrystalBlockEntity extends BlockEntity implements ResonanceS
 
     private int fillBucket() {
         int capacity = capacity();
-        if (capacity <= 0 || resonance <= 0) {
+        int stored = pool.amount();
+        if (capacity <= 0 || stored <= 0) {
             return 0;
         }
-        float fraction = (float) resonance / capacity;
+        float fraction = (float) stored / capacity;
         return Mth.clamp((int) Math.ceil(fraction * 4.0F), 1, 4);
     }
 
     @Override
     protected void applyImplicitComponents(DataComponentGetter components) {
         super.applyImplicitComponents(components);
-        resonance = Math.min(components.getOrDefault(ModDataComponents.STORED_RESONANCE.get(), 0), capacity());
+        pool.set(components.get(ModDataComponents.STORED_RESONANCE_TYPE.get()),
+                Math.min(components.getOrDefault(ModDataComponents.STORED_RESONANCE.get(), 0), capacity()));
         updateFillLevel();
     }
 
     @Override
     protected void collectImplicitComponents(DataComponentMap.Builder components) {
         super.collectImplicitComponents(components);
-        components.set(ModDataComponents.STORED_RESONANCE.get(), resonance);
+        components.set(ModDataComponents.STORED_RESONANCE.get(), pool.amount());
+        components.set(ModDataComponents.STORED_RESONANCE_TYPE.get(), pool.type());
     }
 
     @Override
     public void removeComponentsFromTag(ValueOutput output) {
         super.removeComponentsFromTag(output);
         output.discard("resonance");
+        output.discard("resonance_type");
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putInt("resonance", resonance);
+        pool.save(output, "resonance");
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        resonance = Math.min(input.getIntOr("resonance", 0), capacity());
+        pool.load(input, "resonance", capacity());
     }
 
     @Override

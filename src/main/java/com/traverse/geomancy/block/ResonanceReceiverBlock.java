@@ -4,6 +4,7 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -24,6 +25,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 import com.traverse.geomancy.block.entity.ResonanceReceiverBlockEntity;
 import com.traverse.geomancy.resonance.ResonanceStorage;
+import com.traverse.geomancy.resonance.ResonanceType;
 
 // Placed on a face of any resonance-accepting device; inserts arriving resonance into
 // whatever it's mounted against, spilling into its own small buffer if the host can't
@@ -74,14 +76,15 @@ public class ResonanceReceiverBlock extends Block implements EntityBlock {
     // Returns the amount actually accepted, matching ResonanceStorage#insertResonance.
     // Tries the host behind it first; whatever the host won't take spills into the
     // receiver's own buffer instead of being lost.
-    public static int insert(Level level, BlockPos receiverPos, BlockState receiverState, int amount, boolean simulate) {
+    public static int insert(Level level, BlockPos receiverPos, BlockState receiverState,
+            @Nullable ResourceKey<ResonanceType> type, int amount, boolean simulate) {
         BlockPos hostPos = receiverPos.relative(receiverState.getValue(FACING).getOpposite());
         int remaining = Math.max(amount, 0);
         if (level.getBlockEntity(hostPos) instanceof ResonanceStorage host) {
-            remaining -= host.insertResonance(remaining, simulate);
+            remaining -= host.insertResonance(type, remaining, simulate);
         }
         if (remaining > 0 && level.getBlockEntity(receiverPos) instanceof ResonanceStorage self) {
-            remaining -= self.insertResonance(remaining, simulate);
+            remaining -= self.insertResonance(type, remaining, simulate);
         }
         return amount - remaining;
     }

@@ -71,8 +71,6 @@ public class PedestalSynthesisCategory implements IRecipeCategory<RecipeHolder<P
     public void draw(RecipeHolder<PedestalSynthesisRecipe> holder, IRecipeSlotsView recipeSlotsView,
             GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         PedestalSynthesisRecipe recipe = holder.value();
-        guiGraphics.text(Minecraft.getInstance().font,
-                Component.translatable("geomancy.jei.resonance_cost", recipe.cost().amount()),
-                4, 40, TEXT_COLOR);
+        JeiText.drawCost(guiGraphics, recipe.cost(), 4, 40, TEXT_COLOR);
     }
 }

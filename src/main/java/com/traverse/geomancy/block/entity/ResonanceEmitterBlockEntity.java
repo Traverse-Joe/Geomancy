@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,6 +30,9 @@ import com.traverse.geomancy.registry.ModAttachments;
 import com.traverse.geomancy.registry.ModBlockEntities;
 import com.traverse.geomancy.resonance.ResonanceBeam;
 import com.traverse.geomancy.resonance.ResonanceStorage;
+import com.traverse.geomancy.resonance.ResonanceTypes;
+import com.traverse.geomancy.resonance.ResonanceType;
+import com.traverse.geomancy.resonance.TypedResonancePool;
 
 public class ResonanceEmitterBlockEntity extends BlockEntity implements ResonanceStorage {
     private static final int PULSE_INTERVAL = 10;
@@ -44,7 +48,7 @@ public class ResonanceEmitterBlockEntity extends BlockEntity implements Resonanc
     private final int stagger;
     private @Nullable BlockPos target;
     private boolean wasDelivering;
-    private int buffer;
+    private final TypedResonancePool pool = new TypedResonancePool();
 
     public ResonanceEmitterBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.RESONANCE_EMITTER.get(), pos, state);
@@ -105,7 +109,17 @@ public class ResonanceEmitterBlockEntity extends BlockEntity implements Resonanc
 
     @Override
     public int resonance() {
-        return buffer;
+        return pool.amount();
+    }
+
+    @Override
+    public @Nullable ResourceKey<ResonanceType> resonanceType() {
+        return pool.type();
+    }
+
+    @Override
+    public int resonanceColor() {
+        return pool.color(getLevel());
     }
 
     @Override
@@ -114,10 +128,9 @@ public class ResonanceEmitterBlockEntity extends BlockEntity implements Resonanc
     }
 
     @Override
-    public int insertResonance(int amount, boolean simulate) {
-        int accepted = Math.min(Math.max(amount, 0), capacity() - buffer);
+    public int insertResonance(@Nullable ResourceKey<ResonanceType> type, int amount, boolean simulate) {
+        int accepted = pool.insert(type, amount, BUFFER_CAPACITY, simulate);
         if (!simulate && accepted > 0) {
-            buffer += accepted;
             sync();
         }
         return accepted;
@@ -125,9 +138,8 @@ public class ResonanceEmitterBlockEntity extends BlockEntity implements Resonanc
 
     @Override
     public int extractResonance(int amount, boolean simulate) {
-        int extracted = Math.min(Math.max(amount, 0), buffer);
+        int extracted = pool.extract(amount, simulate);
         if (!simulate && extracted > 0) {
-            buffer -= extracted;
             sync();
         }
         return extracted;
@@ -173,7 +185,8 @@ public class ResonanceEmitterBlockEntity extends BlockEntity implements Resonanc
         if (pos.distSqr(targetPos) > reach * reach) {
             return false;
         }
-        float multiplier = ResonanceBeam.pathMultiplier(level, pos, targetPos, Optional.empty());
+        ResourceKey<ResonanceType> type = source.resonanceType();
+        float multiplier = ResonanceBeam.pathMultiplier(level, pos, targetPos, ResonanceTypes.resolve(level, type));
         if (multiplier <= 0.0F) {
             return false;
         }
@@ -182,7 +195,7 @@ public class ResonanceEmitterBlockEntity extends BlockEntity implements Resonanc
             return false;
         }
         int arriving = (int) (available * multiplier);
-        int accepted = ResonanceReceiverBlock.insert(level, targetPos, targetState, arriving, true);
+        int accepted = ResonanceReceiverBlock.insert(level, targetPos, targetState, type, arriving, true);
         if (accepted <= 0) {
             return false;
         }
@@ -192,20 +205,22 @@ public class ResonanceEmitterBlockEntity extends BlockEntity implements Resonanc
         if (delivered <= 0) {
             return false;
         }
-        ResonanceReceiverBlock.insert(level, targetPos, targetState, delivered, false);
-        feedback(level, pos, !wasDelivering);
+        ResonanceReceiverBlock.insert(level, targetPos, targetState, type, delivered, false);
+        feedback(level, pos, type, !wasDelivering);
         wasDelivering = true;
         return true;
     }
 
-    private static void feedback(Level level, BlockPos from, boolean startingUp) {
+    private static void feedback(Level level, BlockPos from, @Nullable ResourceKey<ResonanceType> type,
+            boolean startingUp) {
         if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
         Vec3 at = Vec3.atCenterOf(from);
         serverLevel.sendParticles(ParticleTypes.END_ROD, at.x, at.y, at.z, 3, 0.15, 0.15, 0.15, 0.01);
         if (startingUp) {
-            serverLevel.playSound(null, from, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.4F, 1.3F);
+            serverLevel.playSound(null, from, SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.BLOCKS, 0.4F,
+                    1.3F * ResonanceTypes.pitch(level, type));
         }
     }
 
@@ -220,14 +235,14 @@ public class ResonanceEmitterBlockEntity extends BlockEntity implements Resonanc
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.storeNullable("target", BlockPos.CODEC, target);
-        output.putInt("buffer", buffer);
+        pool.save(output, "buffer");
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         target = input.read("target", BlockPos.CODEC).orElse(null);
-        buffer = Math.min(input.getIntOr("buffer", 0), BUFFER_CAPACITY);
+        pool.load(input, "buffer", BUFFER_CAPACITY);
     }
 
     @Override

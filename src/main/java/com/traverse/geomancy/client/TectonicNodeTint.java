@@ -21,7 +21,7 @@ import com.traverse.geomancy.registry.ModBlocks;
 public final class TectonicNodeTint implements BlockTintSource {
     @Override
     public int color(BlockState state) {
-        return Essence.TERRA.color();
+        return Essence.NATURAL.color();
     }
 
     @Override

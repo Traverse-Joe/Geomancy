@@ -2,7 +2,7 @@
   "type": "geomancy:transmutation",
   "cost": 20,
   "duration": 80,
-  "essence": "terra",
+  "essence": "natural",
   "input": {
     "type": "block",
     "blocks": "minecraft:iron_ore"

@@ -1,0 +1,9 @@
+{
+  "color": 3054399,
+  "pitch": 1.0,
+  "range_multiplier": 1.0,
+  "dampening_resistance": 0.0,
+  "furnace_speed": 0.0,
+  "source_priority": 30,
+  "source_biomes": "#geomancy:vital_source"
+}

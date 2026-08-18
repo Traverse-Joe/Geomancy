@@ -48,16 +48,16 @@ public class Config {
             .defineInRange("jarRefineRatio", 5, 1, Integer.MAX_VALUE);
 
     public static final ModConfigSpec.IntValue ITEM_SCAN_INTERVAL = BUILDER
-            .comment("Ticks between a Motus pillar's logistics scans")
+            .comment("Ticks between a Aery pillar's logistics scans")
             .defineInRange("itemScanInterval", 10, 1, Integer.MAX_VALUE);
     public static final ModConfigSpec.IntValue LOGISTICS_COST = BUILDER
-            .comment("Motus essence consumed per item moved")
+            .comment("Aery essence consumed per item moved")
             .defineInRange("logisticsCost", 5, 1, Integer.MAX_VALUE);
     public static final ModConfigSpec.IntValue LOGISTICS_RANGE = BUILDER
-            .comment("Maximum endpoint distance for Motus logistics")
+            .comment("Maximum endpoint distance for Aery logistics")
             .defineInRange("logisticsRange", 8, 1, 32);
     public static final ModConfigSpec.DoubleValue LOGISTICS_PICKUP_RADIUS = BUILDER
-            .comment("Radius of a Motus world-item pickup circle")
+            .comment("Radius of an Aery world-item pickup circle")
             .defineInRange("logisticsPickupRadius", 2.5D, 0.5D, 8.0D);
     public static final ModConfigSpec.IntValue PEDESTAL_BUFFER_CAPACITY = BUILDER
             .comment("Maximum essence held by an item pedestal")

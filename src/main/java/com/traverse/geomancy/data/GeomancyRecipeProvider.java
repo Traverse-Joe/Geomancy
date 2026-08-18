@@ -337,24 +337,24 @@ public class GeomancyRecipeProvider extends RecipeProvider {
         smeltingDust(ModItems.COPPER_DUST.get(), Items.COPPER_INGOT, "copper_dust");
         smeltingDust(ModItems.GOLD_DUST.get(), Items.GOLD_INGOT, "gold_dust");
 
-        transmutation(Blocks.STONE, Blocks.IRON_ORE, new EssenceFilter(Optional.of(Essence.METALLUM)),
+        transmutation(Blocks.STONE, Blocks.IRON_ORE, new EssenceFilter(Optional.of(Essence.METALLIC)),
                 EssenceForm.RAW, 40, 100)
                 .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/stone_to_iron_ore"));
-        transmutation(Blocks.STONE, Blocks.IRON_ORE, new EssenceFilter(Optional.of(Essence.METALLUM)),
+        transmutation(Blocks.STONE, Blocks.IRON_ORE, new EssenceFilter(Optional.of(Essence.METALLIC)),
                 EssenceForm.REFINED, 40, 100)
                 .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/stone_to_iron_ore_refined"));
 
-        transmutationLoot(Blocks.IRON_ORE, Essence.TERRA, EssenceForm.RAW, 20, 80)
+        transmutationLoot(Blocks.IRON_ORE, Essence.NATURAL, EssenceForm.RAW, 20, 80)
                 .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/iron_ore_excavation"));
-        transmutationLoot(Blocks.IRON_ORE, Essence.TERRA, EssenceForm.REFINED, 20, 80)
+        transmutationLoot(Blocks.IRON_ORE, Essence.NATURAL, EssenceForm.REFINED, 20, 80)
                 .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/iron_ore_excavation_refined"));
 
-        transmutationItem(Items.RAW_IRON, Items.IRON_INGOT, Essence.IGNIS, EssenceForm.RAW, 15, 60)
+        transmutationItem(Items.RAW_IRON, Items.IRON_INGOT, Essence.INFERNAL, EssenceForm.RAW, 15, 60)
                 .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/raw_iron_to_iron_ingot"));
-        transmutationItem(Items.RAW_IRON, Items.IRON_INGOT, Essence.IGNIS, EssenceForm.REFINED, 15, 60)
+        transmutationItem(Items.RAW_IRON, Items.IRON_INGOT, Essence.INFERNAL, EssenceForm.REFINED, 15, 60)
                 .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/raw_iron_to_iron_ingot_refined"));
 
-        transmutation(Blocks.DEEPSLATE, Blocks.DEEPSLATE_GOLD_ORE, new EssenceFilter(Optional.of(Essence.METALLUM)),
+        transmutation(Blocks.DEEPSLATE, Blocks.DEEPSLATE_GOLD_ORE, new EssenceFilter(Optional.of(Essence.METALLIC)),
                 EssenceForm.REFINED, 20, 200)
                 .save(output, Identifier.fromNamespaceAndPath(Geomancy.MODID, "transmutation/deepslate_to_deepslate_gold_ore"));
     }

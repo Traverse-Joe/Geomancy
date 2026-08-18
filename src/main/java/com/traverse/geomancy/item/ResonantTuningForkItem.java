@@ -19,7 +19,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import com.traverse.geomancy.block.ResonanceEmitterBlock;
+import com.traverse.geomancy.block.entity.GeodeJarBlockEntity;
 import com.traverse.geomancy.block.entity.ResonanceEmitterBlockEntity;
+import com.traverse.geomancy.block.entity.TectonicNodeBlockEntity;
 import com.traverse.geomancy.block.ResonanceReceiverBlock;
 import com.traverse.geomancy.registry.ModDataComponents;
 import com.traverse.geomancy.resonance.BatterySize;
@@ -72,7 +74,17 @@ public class ResonantTuningForkItem extends Item {
             return InteractionResult.SUCCESS_SERVER;
         }
 
-        if (clickedBe instanceof ResonanceEmitterBlockEntity) {
+        if (player != null && player.isShiftKeyDown() && clickedBe instanceof GeodeJarBlockEntity jar
+                && jar.node() != null) {
+            jar.clearNode();
+            play(level, clicked, SoundEvents.AMETHYST_BLOCK_FALL, 1.0F, 0.8F);
+            feedback(player, "item.geomancy.resonant_tuning_fork.unlinked");
+            return InteractionResult.SUCCESS_SERVER;
+        }
+
+        // Emitters and nodes are both link sources; what the second click lands on decides
+        // which kind of link is being made.
+        if (clickedBe instanceof ResonanceEmitterBlockEntity || clickedBe instanceof TectonicNodeBlockEntity) {
             stack.set(ModDataComponents.LINKED_SOURCE.get(), clicked);
             play(level, clicked, SoundEvents.AMETHYST_BLOCK_HIT, 1.0F, 1.2F);
             feedback(player, "item.geomancy.resonant_tuning_fork.selected");
@@ -80,7 +92,24 @@ public class ResonantTuningForkItem extends Item {
         }
 
         BlockPos sourcePos = stack.get(ModDataComponents.LINKED_SOURCE.get());
-        if (sourcePos != null && level.getBlockState(clicked).getBlock() instanceof ResonanceReceiverBlock) {
+        if (sourcePos == null) {
+            return InteractionResult.PASS;
+        }
+
+        if (clickedBe instanceof GeodeJarBlockEntity jar
+                && level.getBlockEntity(sourcePos) instanceof TectonicNodeBlockEntity) {
+            BindResult result = jar.bindNode(level, sourcePos);
+            if (result != BindResult.OK) {
+                feedback(player, bindFailureKey(result));
+                return fail(level, clicked);
+            }
+            stack.remove(ModDataComponents.LINKED_SOURCE.get());
+            play(level, clicked, SoundEvents.AMETHYST_BLOCK_CHIME, 1.0F, 1.1F);
+            feedback(player, "item.geomancy.resonant_tuning_fork.attuned");
+            return InteractionResult.SUCCESS_SERVER;
+        }
+
+        if (level.getBlockState(clicked).getBlock() instanceof ResonanceReceiverBlock) {
             BindResult result = bind(level, sourcePos, clicked);
             if (result != BindResult.OK) {
                 feedback(player, bindFailureKey(result));

@@ -1,0 +1,9 @@
+{
+  "color": 8377576,
+  "pitch": 1.6,
+  "range_multiplier": 1.4,
+  "dampening_resistance": 0.3,
+  "furnace_speed": 0.0,
+  "source_priority": 40,
+  "source_biomes": "#geomancy:crystal_source"
+}

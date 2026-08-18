@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 
 import com.traverse.geomancy.block.entity.GeodeJarBlockEntity;
 import com.traverse.geomancy.registry.ModDataComponents;
+import com.traverse.geomancy.resonance.ResonanceTypes;
 
 public class GeodeJarItem extends BlockItem {
     public GeodeJarItem(Block block, Properties properties) {
@@ -24,5 +25,8 @@ public class GeodeJarItem extends BlockItem {
         super.appendHoverText(stack, context, display, tooltip, flag);
         tooltip.accept(Component.translatable("geomancy.tooltip.stored_resonance",
                 stack.getOrDefault(ModDataComponents.STORED_RESONANCE.get(), 0), GeodeJarBlockEntity.CAPACITY));
+        tooltip.accept(Component.translatable("geomancy.tooltip.resonance_type",
+                ResonanceTypes.coloredName(context.registries(),
+                        stack.get(ModDataComponents.STORED_RESONANCE_TYPE.get()))));
     }
 }

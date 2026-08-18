@@ -1,0 +1,9 @@
+{
+  "color": 11581382,
+  "pitch": 1.1,
+  "range_multiplier": 1.2,
+  "dampening_resistance": 0.05,
+  "furnace_speed": 1.5,
+  "source_priority": 45,
+  "source_biomes": "#geomancy:metallic_source"
+}

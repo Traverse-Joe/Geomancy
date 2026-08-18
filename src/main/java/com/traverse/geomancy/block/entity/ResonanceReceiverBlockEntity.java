@@ -3,6 +3,7 @@ package com.traverse.geomancy.block.entity;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
@@ -16,6 +17,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import com.traverse.geomancy.registry.ModBlockEntities;
 import com.traverse.geomancy.resonance.ResonanceStorage;
+import com.traverse.geomancy.resonance.ResonanceType;
+import com.traverse.geomancy.resonance.TypedResonancePool;
 
 // A small buffer, not a battery: primarily an overflow catch for whatever the host behind
 // it can't accept, but it also makes the Receiver itself a valid ResonanceStorage - so
@@ -24,7 +27,7 @@ import com.traverse.geomancy.resonance.ResonanceStorage;
 public class ResonanceReceiverBlockEntity extends BlockEntity implements ResonanceStorage {
     private static final int BUFFER_CAPACITY = 200;
 
-    private int buffer;
+    private final TypedResonancePool pool = new TypedResonancePool();
 
     public ResonanceReceiverBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.RESONANCE_RECEIVER.get(), pos, state);
@@ -32,7 +35,17 @@ public class ResonanceReceiverBlockEntity extends BlockEntity implements Resonan
 
     @Override
     public int resonance() {
-        return buffer;
+        return pool.amount();
+    }
+
+    @Override
+    public @Nullable ResourceKey<ResonanceType> resonanceType() {
+        return pool.type();
+    }
+
+    @Override
+    public int resonanceColor() {
+        return pool.color(getLevel());
     }
 
     @Override
@@ -41,10 +54,9 @@ public class ResonanceReceiverBlockEntity extends BlockEntity implements Resonan
     }
 
     @Override
-    public int insertResonance(int amount, boolean simulate) {
-        int accepted = Math.min(Math.max(amount, 0), capacity() - buffer);
+    public int insertResonance(@Nullable ResourceKey<ResonanceType> type, int amount, boolean simulate) {
+        int accepted = pool.insert(type, amount, BUFFER_CAPACITY, simulate);
         if (!simulate && accepted > 0) {
-            buffer += accepted;
             sync();
         }
         return accepted;
@@ -52,9 +64,8 @@ public class ResonanceReceiverBlockEntity extends BlockEntity implements Resonan
 
     @Override
     public int extractResonance(int amount, boolean simulate) {
-        int extracted = Math.min(Math.max(amount, 0), buffer);
+        int extracted = pool.extract(amount, simulate);
         if (!simulate && extracted > 0) {
-            buffer -= extracted;
             sync();
         }
         return extracted;
@@ -70,13 +81,13 @@ public class ResonanceReceiverBlockEntity extends BlockEntity implements Resonan
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putInt("buffer", buffer);
+        pool.save(output, "buffer");
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        buffer = Math.min(input.getIntOr("buffer", 0), BUFFER_CAPACITY);
+        pool.load(input, "buffer", BUFFER_CAPACITY);
     }
 
     @Override

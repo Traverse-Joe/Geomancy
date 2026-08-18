@@ -7,6 +7,7 @@ import java.util.List;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -36,7 +37,10 @@ import com.traverse.geomancy.recipe.HearthSynthesisInput;
 import com.traverse.geomancy.recipe.HearthSynthesisRecipe;
 import com.traverse.geomancy.registry.ModBlockEntities;
 import com.traverse.geomancy.registry.ModRecipes;
+import com.traverse.geomancy.resonance.ResonanceCost;
 import com.traverse.geomancy.resonance.ResonanceStorage;
+import com.traverse.geomancy.resonance.ResonanceType;
+import com.traverse.geomancy.resonance.TypedResonancePool;
 
 public class ResonantHearthBlockEntity extends BlockEntity implements ResonanceStorage {
     public static final int MAX_INGREDIENTS = 8;
@@ -48,7 +52,7 @@ public class ResonantHearthBlockEntity extends BlockEntity implements ResonanceS
 
     private final NonNullList<ItemStack> ingredients = NonNullList.withSize(MAX_INGREDIENTS, ItemStack.EMPTY);
     private ItemStack focus = ItemStack.EMPTY;
-    private int buffer;
+    private final TypedResonancePool pool = new TypedResonancePool();
 
     public ResonantHearthBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.RESONANT_HEARTH.get(), pos, state);
@@ -78,7 +82,7 @@ public class ResonantHearthBlockEntity extends BlockEntity implements ResonanceS
 
         HearthSynthesisRecipe recipe = holder.value();
         int resonanceCost = recipe.cost().amount();
-        ResonanceStorage storage = resonanceSource(serverLevel, resonanceCost);
+        ResonanceStorage storage = resonanceSource(serverLevel, recipe.cost());
         if (storage == null) {
             feedback(player, "block.geomancy.resonant_hearth.no_resonance", resonanceCost);
             fail(serverLevel);
@@ -177,22 +181,37 @@ public class ResonantHearthBlockEntity extends BlockEntity implements ResonanceS
     // Checks its own receiver-fed buffer first, then falls back to adjacent storage - a
     // receiver mounted on the Hearth's face inserts here through the same generic
     // ResonanceStorage path every other receiver target uses.
-    private ResonanceStorage resonanceSource(ServerLevel level, int required) {
-        if (extractResonance(required, true) == required) {
+    private @Nullable ResonanceStorage resonanceSource(ServerLevel level, ResonanceCost cost) {
+        int required = cost.amount();
+        if (satisfies(this, cost, required)) {
             return this;
         }
         for (Direction direction : Direction.values()) {
             if (level.getBlockEntity(worldPosition.relative(direction)) instanceof ResonanceStorage storage
-                    && storage.extractResonance(required, true) == required) {
+                    && satisfies(storage, cost, required)) {
                 return storage;
             }
         }
         return null;
     }
 
+    private static boolean satisfies(ResonanceStorage storage, ResonanceCost cost, int required) {
+        return cost.accepts(storage.resonanceType()) && storage.extractResonance(required, true) == required;
+    }
+
     @Override
     public int resonance() {
-        return buffer;
+        return pool.amount();
+    }
+
+    @Override
+    public @Nullable ResourceKey<ResonanceType> resonanceType() {
+        return pool.type();
+    }
+
+    @Override
+    public int resonanceColor() {
+        return pool.color(getLevel());
     }
 
     @Override
@@ -201,10 +220,9 @@ public class ResonantHearthBlockEntity extends BlockEntity implements ResonanceS
     }
 
     @Override
-    public int insertResonance(int amount, boolean simulate) {
-        int accepted = Math.min(Math.max(amount, 0), capacity() - buffer);
+    public int insertResonance(@Nullable ResourceKey<ResonanceType> type, int amount, boolean simulate) {
+        int accepted = pool.insert(type, amount, capacity(), simulate);
         if (!simulate && accepted > 0) {
-            buffer += accepted;
             sync();
         }
         return accepted;
@@ -212,9 +230,8 @@ public class ResonantHearthBlockEntity extends BlockEntity implements ResonanceS
 
     @Override
     public int extractResonance(int amount, boolean simulate) {
-        int extracted = Math.min(Math.max(amount, 0), buffer);
+        int extracted = pool.extract(amount, simulate);
         if (!simulate && extracted > 0) {
-            buffer -= extracted;
             sync();
         }
         return extracted;

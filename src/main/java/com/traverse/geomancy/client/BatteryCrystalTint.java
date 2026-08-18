@@ -17,11 +17,12 @@ import com.traverse.geomancy.registry.ModBlocks;
 import com.traverse.geomancy.resonance.ResonanceStorage;
 
 // The crystal texture is desaturated specifically so this tint can drive it: an empty
-// battery reads as dim stone-violet, a full one blooms toward a bright resonant glow.
+// battery reads as dim stone-violet, a full one blooms toward its resonance type's colour -
+// so what a battery is holding is legible across a room without a tooltip.
 @EventBusSubscriber(modid = Geomancy.MODID, value = Dist.CLIENT)
 public final class BatteryCrystalTint implements BlockTintSource {
     private static final int EMPTY_COLOR = 0xFF4A3F52;
-    private static final int FULL_COLOR = 0xFFE3B8FF;
+    private static final int UNTYPED_FULL_COLOR = 0xFFE3B8FF;
 
     @Override
     public int color(BlockState state) {
@@ -34,7 +35,8 @@ public final class BatteryCrystalTint implements BlockTintSource {
             return EMPTY_COLOR;
         }
         float fill = (float) storage.resonance() / storage.capacity();
-        return ARGB.srgbLerp(fill, EMPTY_COLOR, FULL_COLOR);
+        int full = storage.resonanceType() == null ? UNTYPED_FULL_COLOR : storage.resonanceColor();
+        return ARGB.srgbLerp(fill, EMPTY_COLOR, full);
     }
 
     @SubscribeEvent

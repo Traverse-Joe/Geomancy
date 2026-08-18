@@ -1,5 +1,5 @@
 {
-  "parent": "geomancy:block/item_pedestal_core",
+  "parent": "geomancy:block/resonance_pedestal_core",
   "textures": {
     "all": "geomancy:block/resonance_pillar"
   }

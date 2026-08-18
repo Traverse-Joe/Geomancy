@@ -3,6 +3,7 @@ package com.traverse.geomancy.registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import com.mojang.serialization.Codec;
@@ -11,6 +12,7 @@ import net.minecraft.util.ExtraCodecs;
 
 import com.traverse.geomancy.Geomancy;
 import com.traverse.geomancy.essence.EssenceCharge;
+import com.traverse.geomancy.resonance.ResonanceType;
 import com.traverse.geomancy.wayfinder.WayfinderAnchor;
 
 public final class ModDataComponents {
@@ -43,6 +45,13 @@ public final class ModDataComponents {
             DATA_COMPONENTS.registerComponentType("stored_resonance", builder -> builder
                     .persistent(ExtraCodecs.NON_NEGATIVE_INT)
                     .networkSynchronized(ByteBufCodecs.VAR_INT));
+
+    // The type that resonance carries, so a jar or battery broken and re-placed keeps its
+    // character as well as its charge.
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<ResonanceType>>> STORED_RESONANCE_TYPE =
+            DATA_COMPONENTS.registerComponentType("stored_resonance_type", builder -> builder
+                    .persistent(ResourceKey.codec(ModRegistries.RESONANCE_TYPE))
+                    .networkSynchronized(ResourceKey.streamCodec(ModRegistries.RESONANCE_TYPE)));
 
     // Toggled by shift-use-in-air on the Resonant Tuning Fork. Networked so the client
     // renderer can read it straight off the held stack without a packet.

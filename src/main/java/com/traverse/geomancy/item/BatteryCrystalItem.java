@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.Block;
 
 import com.traverse.geomancy.block.BatteryCrystalBlock;
 import com.traverse.geomancy.registry.ModDataComponents;
+import com.traverse.geomancy.resonance.ResonanceTypes;
 
 public class BatteryCrystalItem extends BlockItem {
     public BatteryCrystalItem(Block block, Properties properties) {
@@ -25,5 +26,8 @@ public class BatteryCrystalItem extends BlockItem {
         int capacity = ((BatteryCrystalBlock) getBlock()).size().capacity();
         tooltip.accept(Component.translatable("geomancy.tooltip.stored_resonance",
                 stack.getOrDefault(ModDataComponents.STORED_RESONANCE.get(), 0), capacity));
+        tooltip.accept(Component.translatable("geomancy.tooltip.resonance_type",
+                ResonanceTypes.coloredName(context.registries(),
+                        stack.get(ModDataComponents.STORED_RESONANCE_TYPE.get()))));
     }
 }

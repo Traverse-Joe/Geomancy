@@ -12,14 +12,14 @@ import net.minecraft.util.StringRepresentable;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public enum Essence implements StringRepresentable {
-    TERRA(0xFF8B7355),
-    METALLUM(0xFFB0B7C6),
-    VITRI(0xFF7FD4E8),
-    MOTUS(0xFFE8D98A),
-    IGNIS(0xFFE8663D),
-    INANIS(0xFF6B4C9A),
-    VITAE(0xFF2E9B3F),
-    AQUA(0xFF2A6FD4),
+    NATURAL(0xFF8B7355),
+    METALLIC(0xFFB0B7C6),
+    CRYSTAL(0xFF7FD4E8),
+    AERY(0xFFE8D98A),
+    INFERNAL(0xFFE8663D),
+    ENDER(0xFF6B4C9A),
+    VITAL(0xFF2E9B3F),
+    AQUATIC(0xFF2A6FD4),
     CRYO(0xFFDDF2FF);
 
     public static final Codec<Essence> CODEC = StringRepresentable.fromEnum(Essence::values);

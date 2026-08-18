@@ -62,7 +62,8 @@ public class GeomancyBlockLoot extends BlockLootSubProvider {
                 LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(
                         LootItem.lootTableItem(ModItems.GEODE_JAR.get()).apply(
                                 CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
-                                        .include(ModDataComponents.STORED_RESONANCE.get()))))));
+                                        .include(ModDataComponents.STORED_RESONANCE.get())
+                                        .include(ModDataComponents.STORED_RESONANCE_TYPE.get()))))));
 
         batteryCrystal(ModBlocks.SMALL_BATTERY_CRYSTAL.get(), ModItems.SMALL_BATTERY_CRYSTAL.get());
         batteryCrystal(ModBlocks.MEDIUM_BATTERY_CRYSTAL.get(), ModItems.MEDIUM_BATTERY_CRYSTAL.get());
@@ -74,6 +75,7 @@ public class GeomancyBlockLoot extends BlockLootSubProvider {
                 LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).add(
                         LootItem.lootTableItem(item).apply(
                                 CopyComponentsFunction.copyComponentsFromBlockEntity(LootContextParams.BLOCK_ENTITY)
-                                        .include(ModDataComponents.STORED_RESONANCE.get()))))));
+                                        .include(ModDataComponents.STORED_RESONANCE.get())
+                                        .include(ModDataComponents.STORED_RESONANCE_TYPE.get()))))));
     }
 }

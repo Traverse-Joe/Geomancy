@@ -74,6 +74,12 @@ public class ResonanceJarBlockEntity extends BlockEntity implements EssenceRelay
         return charge;
     }
 
+    // Rides along in the update tag, so the client can tint a link by what the jar is
+    // currently drawing in rather than only by what it has finished refining.
+    public EssenceCharge intake() {
+        return intake;
+    }
+
     @Override
     public int capacity() {
         return Config.JAR_REFINED_CAPACITY.get();

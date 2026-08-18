@@ -48,7 +48,7 @@ public class TectonicNodeRenderer implements BlockEntityRenderer<TectonicNodeBlo
         BlockPos target = node.jobRenderPos();
 
         if (state.revealed || target != null) {
-            Essence essence = node.getLevel() == null ? Essence.TERRA : node.essence();
+            Essence essence = node.getLevel() == null ? Essence.NATURAL : node.essence();
             state.outlineColor = ARGB.opaque(essence.color());
         }
 

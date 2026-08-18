@@ -26,6 +26,7 @@ public final class GeomancyDataGenerators {
         event.createProvider(GeomancyRecipeProvider.Runner::new);
         event.createProvider((output, lookup) -> new LootTableProvider(output, Set.of(),
                 List.of(new LootTableProvider.SubProviderEntry(GeomancyBlockLoot::new, LootContextParamSets.BLOCK)), lookup));
+        event.createProvider(GeomancyBlockTagsProvider::new);
         event.createProvider(GeomancyCuriosProvider::new);
 
         event.createDatapackRegistryObjects(new RegistrySetBuilder()

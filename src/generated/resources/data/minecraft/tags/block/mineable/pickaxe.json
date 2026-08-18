@@ -1,0 +1,18 @@
+{
+  "values": [
+    "geomancy:resonance_pillar",
+    "geomancy:resonance_jar",
+    "geomancy:item_pedestal",
+    "geomancy:geode_jar",
+    "geomancy:piezo_anvil",
+    "geomancy:resonant_hearth",
+    "geomancy:resonant_brazier",
+    "geomancy:hearth_crystal",
+    "geomancy:small_battery_crystal",
+    "geomancy:medium_battery_crystal",
+    "geomancy:large_battery_crystal",
+    "geomancy:resonance_emitter",
+    "geomancy:resonance_receiver",
+    "geomancy:resonance_pedestal"
+  ]
+}

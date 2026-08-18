@@ -2,7 +2,7 @@
   "type": "geomancy:transmutation",
   "cost": 15,
   "duration": 60,
-  "essence": "ignis",
+  "essence": "infernal",
   "form": "refined",
   "input": {
     "type": "item",

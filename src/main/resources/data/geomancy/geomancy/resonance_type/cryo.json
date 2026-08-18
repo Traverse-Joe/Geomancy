@@ -1,8 +1,9 @@
 {
-  "color": 11790844,
+  "color": 14545663,
   "pitch": 0.7,
   "range_multiplier": 0.9,
   "dampening_resistance": 0.0,
   "furnace_speed": 0.0,
-  "source_biomes": "#geomancy:frost_source"
+  "source_priority": 70,
+  "source_biomes": "#geomancy:cryo_source"
 }

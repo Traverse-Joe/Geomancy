@@ -42,7 +42,7 @@ public class TectonicNodeBlockEntity extends EssenceWorkerBlockEntity implements
         if (storedEssence != null) {
             return storedEssence;
         }
-        return level == null ? Essence.TERRA : BiomeEssence.at(level, worldPosition);
+        return level == null ? Essence.NATURAL : BiomeEssence.at(level, worldPosition);
     }
 
     public Essence cycleDebugEssence(Level level) {

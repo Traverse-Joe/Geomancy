@@ -12,7 +12,7 @@ import net.minecraft.util.ExtraCodecs;
 // buffer can accept the first delivery of any essence/form without needing a separate
 // "unset" state.
 public record EssenceCharge(Essence essence, EssenceForm form, int amount) {
-    public static final EssenceCharge EMPTY = new EssenceCharge(Essence.TERRA, EssenceForm.RAW, 0);
+    public static final EssenceCharge EMPTY = new EssenceCharge(Essence.NATURAL, EssenceForm.RAW, 0);
 
     public static final Codec<EssenceCharge> CODEC = RecordCodecBuilder.create(i -> i.group(
             Essence.CODEC.fieldOf("essence").forGetter(EssenceCharge::essence),

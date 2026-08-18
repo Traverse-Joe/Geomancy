@@ -2,7 +2,7 @@
   "type": "geomancy:transmutation",
   "cost": 40,
   "duration": 100,
-  "essence": "metallum",
+  "essence": "metallic",
   "form": "refined",
   "input": {
     "type": "block",

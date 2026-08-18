@@ -5,7 +5,10 @@ import java.util.Optional;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import org.jspecify.annotations.Nullable;
+
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -35,5 +38,15 @@ public record ResonanceCost(Optional<Holder<ResonanceType>> type, int amount) {
 
     public boolean accepts(Optional<Holder<ResonanceType>> suppliedType) {
         return type.isEmpty() || type.equals(suppliedType);
+    }
+
+    // A recipe with no type accepts anything, including plain generator output. A recipe
+    // that names one only matches storage already holding that type.
+    public boolean accepts(@Nullable ResourceKey<ResonanceType> suppliedType) {
+        return type.isEmpty() || type.flatMap(Holder::unwrapKey).filter(key -> key.equals(suppliedType)).isPresent();
+    }
+
+    public Optional<ResourceKey<ResonanceType>> typeKey() {
+        return type.flatMap(Holder::unwrapKey);
     }
 }

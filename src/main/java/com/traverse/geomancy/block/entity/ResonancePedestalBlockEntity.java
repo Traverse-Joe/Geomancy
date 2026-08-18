@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ParticleTypes;
@@ -29,7 +30,10 @@ import com.traverse.geomancy.item.ResonanceVesselItem;
 import com.traverse.geomancy.recipe.PedestalSynthesisRecipe;
 import com.traverse.geomancy.registry.ModBlockEntities;
 import com.traverse.geomancy.registry.ModRecipes;
+import com.traverse.geomancy.resonance.ResonanceCost;
 import com.traverse.geomancy.resonance.ResonanceStorage;
+import com.traverse.geomancy.resonance.ResonanceType;
+import com.traverse.geomancy.resonance.TypedResonancePool;
 
 // No externally-triggered "activate" step, unlike the Hearth's Tuning-Fork strike - every
 // server tick this checks the held item and either trickle-charges a Resonance Vessel (the
@@ -42,7 +46,7 @@ public class ResonancePedestalBlockEntity extends BlockEntity implements Resonan
     private static final int CHARGE_PER_PULSE = 20;
 
     private ItemStack held = ItemStack.EMPTY;
-    private int buffer;
+    private final TypedResonancePool pool = new TypedResonancePool();
     private int progress;
     private int duration;
 
@@ -149,7 +153,7 @@ public class ResonancePedestalBlockEntity extends BlockEntity implements Resonan
         PedestalSynthesisRecipe recipe = holder.get().value();
         duration = recipe.duration();
         int cost = recipe.cost().amount();
-        ResonanceStorage source = resonanceSource(level, cost);
+        ResonanceStorage source = resonanceSource(level, recipe.cost());
         if (source == null) {
             // Pause rather than reset: resonance merely isn't available yet this tick.
             return;
@@ -191,17 +195,22 @@ public class ResonancePedestalBlockEntity extends BlockEntity implements Resonan
     // Self-then-adjacent lookup requiring the full amount, mirrors
     // ResonantHearthBlockEntity.resonanceSource - used for synthesis, where a partial
     // extraction would mean paying for an unfinished craft.
-    private @Nullable ResonanceStorage resonanceSource(Level level, int required) {
-        if (extractResonance(required, true) == required) {
+    private @Nullable ResonanceStorage resonanceSource(Level level, ResonanceCost cost) {
+        int required = cost.amount();
+        if (satisfies(this, cost, required)) {
             return this;
         }
         for (Direction direction : Direction.values()) {
             if (level.getBlockEntity(worldPosition.relative(direction)) instanceof ResonanceStorage storage
-                    && storage.extractResonance(required, true) == required) {
+                    && satisfies(storage, cost, required)) {
                 return storage;
             }
         }
         return null;
+    }
+
+    private static boolean satisfies(ResonanceStorage storage, ResonanceCost cost, int required) {
+        return cost.accepts(storage.resonanceType()) && storage.extractResonance(required, true) == required;
     }
 
     // Same lookup, but any nonzero amount is acceptable - a Vessel trickle-charges fine off
@@ -221,7 +230,17 @@ public class ResonancePedestalBlockEntity extends BlockEntity implements Resonan
 
     @Override
     public int resonance() {
-        return buffer;
+        return pool.amount();
+    }
+
+    @Override
+    public @Nullable ResourceKey<ResonanceType> resonanceType() {
+        return pool.type();
+    }
+
+    @Override
+    public int resonanceColor() {
+        return pool.color(getLevel());
     }
 
     @Override
@@ -230,10 +249,9 @@ public class ResonancePedestalBlockEntity extends BlockEntity implements Resonan
     }
 
     @Override
-    public int insertResonance(int amount, boolean simulate) {
-        int accepted = Math.min(Math.max(amount, 0), capacity() - buffer);
+    public int insertResonance(@Nullable ResourceKey<ResonanceType> type, int amount, boolean simulate) {
+        int accepted = pool.insert(type, amount, capacity(), simulate);
         if (!simulate && accepted > 0) {
-            buffer += accepted;
             sync();
         }
         return accepted;
@@ -241,9 +259,8 @@ public class ResonancePedestalBlockEntity extends BlockEntity implements Resonan
 
     @Override
     public int extractResonance(int amount, boolean simulate) {
-        int extracted = Math.min(Math.max(amount, 0), buffer);
+        int extracted = pool.extract(amount, simulate);
         if (!simulate && extracted > 0) {
-            buffer -= extracted;
             sync();
         }
         return extracted;
@@ -260,7 +277,7 @@ public class ResonancePedestalBlockEntity extends BlockEntity implements Resonan
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.store("held", ItemStack.OPTIONAL_CODEC, held);
-        output.putInt("buffer", buffer);
+        pool.save(output, "buffer");
         output.putInt("progress", progress);
         output.putInt("duration", duration);
     }
@@ -269,7 +286,7 @@ public class ResonancePedestalBlockEntity extends BlockEntity implements Resonan
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         held = input.read("held", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
-        buffer = Math.min(input.getIntOr("buffer", 0), BUFFER_CAPACITY);
+        pool.load(input, "buffer", capacity());
         progress = input.getIntOr("progress", 0);
         duration = input.getIntOr("duration", 0);
     }

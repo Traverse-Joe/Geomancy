@@ -3,6 +3,7 @@ package com.traverse.geomancy.block.entity;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.particles.ItemParticleOption;
@@ -32,6 +33,8 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import com.traverse.geomancy.block.ResonantBrazierBlock;
 import com.traverse.geomancy.registry.ModBlockEntities;
 import com.traverse.geomancy.resonance.ResonanceStorage;
+import com.traverse.geomancy.resonance.ResonanceType;
+import com.traverse.geomancy.resonance.TypedResonancePool;
 
 public class ResonantBrazierBlockEntity extends BlockEntity implements ResonanceStorage {
     private static final int RESONANCE_PER_PULSE = 5;
@@ -56,7 +59,7 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
     private int resonanceSinceBreakCheck;
     private int burnTicks;
     private long nextInsertTick;
-    private int buffer;
+    private final TypedResonancePool pool = new TypedResonancePool();
     private final CrystalSlot itemHandler = new CrystalSlot();
 
     public ResonantBrazierBlockEntity(BlockPos pos, BlockState state) {
@@ -215,7 +218,17 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
 
     @Override
     public int resonance() {
-        return buffer;
+        return pool.amount();
+    }
+
+    @Override
+    public @Nullable ResourceKey<ResonanceType> resonanceType() {
+        return pool.type();
+    }
+
+    @Override
+    public int resonanceColor() {
+        return pool.color(getLevel());
     }
 
     @Override
@@ -224,10 +237,9 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
     }
 
     @Override
-    public int insertResonance(int amount, boolean simulate) {
-        int accepted = Math.min(Math.max(amount, 0), capacity() - buffer);
+    public int insertResonance(@Nullable ResourceKey<ResonanceType> type, int amount, boolean simulate) {
+        int accepted = pool.insert(type, amount, capacity(), simulate);
         if (!simulate && accepted > 0) {
-            buffer += accepted;
             sync();
         }
         return accepted;
@@ -235,9 +247,8 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
 
     @Override
     public int extractResonance(int amount, boolean simulate) {
-        int extracted = Math.min(Math.max(amount, 0), buffer);
+        int extracted = pool.extract(amount, simulate);
         if (!simulate && extracted > 0) {
-            buffer -= extracted;
             sync();
         }
         return extracted;
@@ -282,7 +293,7 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
         output.putInt("resonance_since_break_check", resonanceSinceBreakCheck);
         output.putInt("burn_ticks", burnTicks);
         output.putLong("next_insert_tick", nextInsertTick);
-        output.putInt("buffer", buffer);
+        pool.save(output, "buffer");
     }
 
     @Override
@@ -292,7 +303,7 @@ public class ResonantBrazierBlockEntity extends BlockEntity implements Resonance
         resonanceSinceBreakCheck = input.getIntOr("resonance_since_break_check", 0);
         burnTicks = Math.max(input.getIntOr("burn_ticks", 0), 0);
         nextInsertTick = input.getLongOr("next_insert_tick", 0L);
-        buffer = Math.min(input.getIntOr("buffer", 0), BUFFER_CAPACITY);
+        pool.load(input, "buffer", capacity());
     }
 
     @Override

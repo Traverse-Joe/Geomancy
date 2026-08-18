@@ -92,13 +92,10 @@ public class HearthSynthesisCategory implements IRecipeCategory<RecipeHolder<Hea
     public void draw(RecipeHolder<HearthSynthesisRecipe> holder, IRecipeSlotsView recipeSlotsView,
             GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         HearthSynthesisRecipe recipe = holder.value();
-        guiGraphics.text(Minecraft.getInstance().font,
-                Component.translatable("geomancy.jei.resonance_cost", recipe.cost().amount()),
-                4, 70, TEXT_COLOR);
+        int y = JeiText.drawCost(guiGraphics, recipe.cost(), 4, 70, TEXT_COLOR);
         if (recipe.requiresFocus()) {
             guiGraphics.text(Minecraft.getInstance().font,
-                    Component.translatable("geomancy.jei.requires_focus"),
-                    4, 82, TEXT_COLOR);
+                    Component.translatable("geomancy.jei.requires_focus"), 4, y, TEXT_COLOR);
         }
     }
 }
